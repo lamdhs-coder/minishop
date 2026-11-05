@@ -1,0 +1,8 @@
+# Build
+*.exe
+*.o
+*.obj
+*.out
+
+# Hoa don chua thong tin ca nhan
+hoadon_*.txt

@@ -1,0 +1,10 @@
+1|Chuot Logitech|250000
+2|Ban phim AKKO|850000
+3|Tai nghe Sony|590000
+4|Lot chuot|90000
+5|Webcam Logitech|750000
+6|USB Kingston|180000
+7|Loa Bluetooth|450000
+8|Man hinh Samsung|3200000
+9|Chuot Gaming|390000
+10|Ban phim Co|1250000
