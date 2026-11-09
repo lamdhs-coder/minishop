@@ -1,21 +1,51 @@
-#ifndef CUSTOMER_H
-#define CUSTOMER_H
-
+#include <iostream>
 #include <string>
 
-// MEMBER 3: Chi luu du lieu, khong nhap/xuat Console.
 class Customer {
 private:
-    std::string name;
-    std::string phone;
-    std::string address;
+    std::string fullName;     // Họ và tên
+    std::string phoneNumber;  // Số điện thoại
+    std::string address;      // Địa chỉ
 
 public:
-    Customer(const std::string& name, const std::string& phone,
-             const std::string& address);
-    const std::string& getName() const;
-    const std::string& getPhone() const;
-    const std::string& getAddress() const;
-};
+    // 1. Hàm khởi tạo mặc định (Default Constructor)
+    Customer() : fullName(""), phoneNumber(""), address("") {}
 
-#endif
+    // 2. Hàm khởi tạo có tham số (Parameterized Constructor)
+    Customer(std::string fullName, std::string phoneNumber, std::string address)
+        : fullName(fullName), phoneNumber(phoneNumber), address(address) {}
+
+    // --- GETTER (Lấy giá trị của các thuộc tính) ---
+    std::string getFullName() const {
+        return fullName;
+    }
+
+    std::string getPhoneNumber() const {
+        return phoneNumber;
+    }
+
+    std::string getAddress() const {
+        return address;
+    }
+
+    // --- SETTER (Thay đổi giá trị của các thuộc tính) ---
+    void setFullName(const std::string& newFullName) {
+        fullName = newFullName;
+    }
+
+    void setPhoneNumber(const std::string& newPhoneNumber) {
+        phoneNumber = newPhoneNumber;
+    }
+
+    void setAddress(const std::string& newAddress) {
+        address = newAddress;
+    }
+
+    // --- PHƯƠNG THỨC HIỂN THỊ ---
+    void display() const {
+        std::cout << "-----------------------------------" << std::endl;
+        std::cout << "Ho va ten:     " << fullName << std::endl;
+        std::cout << "So dien thoai: " << phoneNumber << std::endl;
+        std::cout << "Dia chi:       " << address << std::endl;
+    }
+};
