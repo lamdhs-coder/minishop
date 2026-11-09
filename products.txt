@@ -1,10 +1,12 @@
-1|Chuot Logitech|250000
-2|Ban phim AKKO|850000
-3|Tai nghe Sony|590000
-4|Lot chuot|90000
-5|Webcam Logitech|750000
-6|USB Kingston|180000
-7|Loa Bluetooth|450000
-8|Man hinh Samsung|3200000
-9|Chuot Gaming|390000
-10|Ban phim Co|1250000
+P001|Laptop Dell XPS 13|25000000|15
+P002|Chuot Khong Day Logitech|450000|50
+P003|Ban Phuong Co Mechanical|1200000|30
+P004|Man Hinh LG 27 inch 4K|8500000|20
+P005|Tai Nghe Bluetooth Sony|2300000|40
+P006|O Cung SSD 1TB Samsung|2100000|25
+P007|Webcam Logitech HD|950000|35
+P008|Loa Bluetooth JBL|1800000|18
+P009|Sac Du Phong 20000mAh|550000|60
+P010|Cap Sac Type-C Anker|200000|100
+P011|Gia Do Laptop Nhom|350000|45
+P012|Lot Ban Phim RGB|150000|80
