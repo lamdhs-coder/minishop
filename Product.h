@@ -11,6 +11,7 @@ private:
     long long price;
 
 public:
+    // Nem std::invalid_argument neu id/gia <= 0 hoac ten chi co khoang trang.
     Product(int id, const std::string& name, long long price);
     int getId() const;
     const std::string& getName() const;

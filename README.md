@@ -3,9 +3,10 @@
 Đồ án OOP nhập môn, dùng C++17 và `std::vector`. Tiền được lưu bằng
 `long long` theo đơn vị VND. Không dùng Qt, CMake hoặc thư viện bên thứ ba.
 
-**Trạng thái hiện tại:** phần Leader đã viết đầy đủ source; phần thành viên 2
-và 3 là khung TODO. Project biên dịch và chạy menu được, nhưng **chưa mua hàng
-được**. Cả sáu mục chức năng đang được chặn bằng cờ
+**Trạng thái hiện tại:** phần Leader đã viết đầy đủ source; phần code của thành
+viên 3 (Product, Customer) đã hoàn thiện và kiểm thử. Phần thành viên 2 vẫn là
+khung TODO. Project biên dịch và chạy menu được, nhưng **chưa mua hàng được**.
+Cả sáu mục chức năng đang được chặn bằng cờ
 `MEMBER_LOGIC_READY = false` trong `main.cpp`. Khi chọn, chương trình báo:
 
 > Chuc nang dang duoc thanh vien phat trien.
@@ -17,10 +18,10 @@ Không dùng dữ liệu giả, không gọi stub để giả lập đặt hàng
 | Mã | Yêu cầu | Tình trạng thực tế |
 | --- | --- | --- |
 | F01 | Đọc products.txt vào vector<Product>, xử lý thiếu file | TODO thành viên 2; main đã bắt lỗi tải file |
-| F02 | Bảng mã, tên, đơn giá sản phẩm | Leader đã viết giao diện; chờ Product và bộ đọc file |
+| F02 | Bảng mã, tên, đơn giá sản phẩm | Product đã hoàn thiện; giao diện chờ bộ đọc file |
 | F03 | Thêm theo mã, trùng mã tăng số lượng | Leader đã nối menu; logic ShoppingCart chờ thành viên 2 |
 | F04 | Xem giỏ, đơn giá, số lượng, thành tiền, tổng | Leader đã viết giao diện; chờ CartItem/ShoppingCart |
-| F05 | Nhập khách hàng, kiểm tra giỏ rỗng | Leader đã viết luồng; chờ Customer/ShoppingCart |
+| F05 | Nhập khách hàng, kiểm tra giỏ rỗng | Customer đã hoàn thiện; luồng chờ ShoppingCart |
 | F06 | Xem trước, xác nhận, ngày giao, phí và tổng tiền | Leader đã viết Order và checkout; chưa kiểm thử tích hợp |
 | F07 | Tìm một phần tên, không phân biệt hoa thường ASCII | Leader đã viết; chờ dữ liệu sản phẩm thật |
 | F08 | Tăng, giảm, xóa trong giỏ | Leader đã nối menu; logic chờ thành viên 2 |
@@ -40,6 +41,7 @@ shop/
   Order.h         Order.cpp
   ProductFile.h   ProductFile.cpp
   products.txt
+  tests/member3_test.cpp
   README.md
   TASKS.md
   .gitignore
@@ -109,8 +111,8 @@ không gọi system("cls") hoặc system("pause"). Dữ liệu mẫu cũng dùng
 
 ## Bắt đầu công việc và tích hợp
 
-1. Thành viên 3 hoàn thiện Product và Customer trước: constructor, getter,
-   bỏ các lệnh ném `logic_error` sau khi đã viết logic thật.
+1. Product và Customer đã hoàn thiện constructor, getter và kiểm thử riêng.
+   Thành viên 3 đọc phần giải thích dưới đây để nắm code khi vấn đáp.
 2. Thành viên 2 hoàn thiện CartItem, ShoppingCart, ProductFile theo TODO.
    Có thể đọc các header trước để thống nhất giao tiếp với main và Order.
 3. Giữ nguyên chữ ký hàm. ShoppingCart tăng/giảm/xóa trả false khi không có mã,
@@ -128,11 +130,49 @@ không gọi system("cls") hoặc system("pause"). Dữ liệu mẫu cũng dùng
    lỗi TODO; đó là dấu hiệu chưa tích hợp xong, không phải chức năng đã chạy.
 
 ShoppingCart dùng constructor mặc định do C++ tạo để khởi tạo vector rỗng;
-các phương thức nghiệp vụ vẫn là stub. Các constructor Product, Customer,
-CartItem mới chỉ có danh sách khởi tạo tối thiểu và ném lỗi TODO, chưa hoàn tất.
+các phương thức nghiệp vụ và CartItem vẫn là stub. Không bật cờ khi các TODO
+của thành viên 2 chưa hoàn tất.
 
-Dữ liệu mẫu được Leader tạo sẵn theo đề để bàn giao; thành viên 3 cần rà soát,
-giải thích và có thể bổ sung dữ liệu khi làm phần của mình.
+Dữ liệu mẫu đã được rà soát: 10 dòng đúng định dạng, ID dương không trùng,
+giá dương; đã tạo được Product thật từ cả 10 dòng khi kiểm thử riêng.
+
+## Phần thành viên 3 và gợi ý vấn đáp
+
+- Product lưu id, name và price trong thuộc tính private. Constructor dùng
+  danh sách khởi tạo để sao chép dữ liệu, sau đó từ chối id/giá không dương
+  hoặc tên rỗng/chỉ gồm khoảng trắng bằng `std::invalid_argument`.
+- Customer sao chép tên, điện thoại và địa chỉ; từ chối tên/địa chỉ rỗng hoặc
+  chỉ gồm khoảng trắng. Điện thoại phải đúng 10 chữ số ASCII, bắt đầu bằng 0.
+  Lưu bằng string nên không mất số 0 đầu. Constructor không tự cắt khoảng trắng;
+  main đã xử lý đầu vào, còn dữ liệu truyền trực tiếp sai định dạng sẽ bị từ chối.
+- Việc kiểm tra tại class bảo vệ dữ liệu cả khi tạo đối tượng ngoài menu;
+  kiểm tra tại main giúp người dùng được nhập lại ngay khi gõ sai.
+- Mỗi getter chỉ trả thuộc tính tương ứng. `const` sau tên hàm cho phép đọc
+  trên đối tượng const; `const std::string&` tránh sao chép và không cho người
+  gọi sửa chuỗi private qua getter. Hai class không nhập/xuất Console.
+- Dữ liệu được lưu theo giá trị: đổi biến chuỗi nguồn sau khi khởi tạo không
+  đổi đối tượng. Phép sao chép mặc định của C++ cũng sao chép các thuộc tính.
+
+Thành viên 3 cần đọc, chạy và tự giải thích phần này để chuẩn bị thuyết trình;
+việc thuyết trình thực tế chưa được đánh dấu hoàn thành.
+
+## Tự chạy kiểm thử phần thành viên 3
+
+Từ thư mục `shop`, chạy hai lệnh trong Git Bash hoặc PowerShell:
+
+```bash
+g++ -std=c++17 -Wall -Wextra tests/member3_test.cpp Product.cpp Customer.cpp -o test_member3.exe
+./test_member3.exe
+```
+
+File kiểm thử có main riêng, vì vậy **không thêm main.cpp của ứng dụng** vào
+lệnh trên. Không cần bật MEMBER_LOGIC_READY và không cần phần thành viên 2.
+Chương trình tự chạy 32 kiểm tra, in từng dòng PASS/FAIL; kết quả đúng là
+`Ket qua: 32 PASS, 0 FAIL`. Khi có lỗi, chương trình trả mã thoát 1.
+
+Kiểm thử gồm constructor/getter, lưu trong vector, sao chép dữ liệu, giới hạn
+ID/giá, tên/địa chỉ rỗng hoặc toàn khoảng trắng và điện thoại sai định dạng.
+Đây là kiểm thử riêng hai class; luồng mua hàng trên menu vẫn chờ thành viên 2.
 
 ## Kiểm tra đã thực sự chạy
 
@@ -149,9 +189,15 @@ giải thích và có thể bổ sung dữ liệu khi làm phần của mình.
 | Hàm kiểm tra điện thoại | Chấp nhận 0901234567; từ chối sai độ dài, đầu số, chữ, khoảng trắng bên trong |
 | Hàm định dạng tiền | Đúng với 0, 999, 1000, 1380000, giới hạn long long |
 | Hàm cộng ngày được Order sử dụng | Đúng qua cuối tháng/năm, tháng 2 năm nhuận và thường |
+| Product: constructor, getter, sao chép, lưu trong vector | Đạt; kiểm tra giá 1 và giới hạn long long, ID giới hạn int, tên dài |
+| Product: đầu vào không hợp lệ | Từ chối ID/giá 0 hoặc âm, tên rỗng hoặc chỉ khoảng trắng |
+| Customer: constructor, getter, sao chép | Đạt; giữ số 0 đầu, lưu chuỗi tiếng Việt, độc lập với biến nguồn |
+| Customer: đầu vào không hợp lệ | Từ chối tên/địa chỉ rỗng hoặc chỉ khoảng trắng; điện thoại sai độ dài, đầu số, chữ hoặc khoảng trắng |
+| products.txt và Product thật | Đã tạo đủ 10 Product, đối chiếu mã và giá mẫu; không dùng bộ đọc file TODO |
 
-Các kiểm tra hàm dùng bộ chạy kiểm tra tạm thời, không sửa stub và không lưu
-thêm framework/test file vào project. **Kiểm tra hàm nhập không có nghĩa đã
+Các kiểm tra menu, hàm nhập, ngày và tiền dùng bộ chạy kiểm tra tạm thời.
+Kiểm thử Product/Customer có thể chạy lại bằng `tests/member3_test.cpp`,
+không cần framework. **Kiểm tra hàm nhập không có nghĩa đã
 chạy được checkout. Kiểm tra hàm cộng ngày không thay thế kiểm thử Order.**
 
 **Chưa chạy thực tế do phụ thuộc TODO:** khởi tạo đơn với dữ liệu thật, bản sao

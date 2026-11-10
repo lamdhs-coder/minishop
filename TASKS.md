@@ -33,7 +33,7 @@ viên khác chưa được kiểm thử tích hợp và chưa được đánh d�
 | ShoppingCart.cpp: tổng tiền và tổng số lượng | TODO | Cộng getTotalPrice và getQuantity |
 | ProductFile.cpp: đọc TXT, xử lý lỗi | TODO | ifstream, getline, tách ba trường |
 | Hỗ trợ tìm kiếm theo phân công bổ sung | Không bắt buộc | Leader đã viết tìm kiếm trong main |
-| Kiểm thử các class và tích hợp với Leader | Chưa chạy | Bắt đầu sau khi Product sẵn sàng |
+| Kiểm thử các class và tích hợp với Leader | Chưa chạy | Product đã sẵn sàng; hoàn thiện các TODO thành viên 2 |
 
 Hợp đồng cần giữ: tăng/giảm mỗi lần một đơn vị; addProduct trả void,
 các thao tác theo mã trả bool; getItems trả tham chiếu const; tổng số lượng
@@ -44,23 +44,24 @@ Lỗi dữ liệu/tràn số dùng exception; không trả kết quả giả đ�
 
 | Công việc / file | Trạng thái | Bắt đầu từ |
 | --- | --- | --- |
-| Product.cpp: constructor | TODO | Kiểm tra id > 0, tên không rỗng, giá > 0 |
-| Product.cpp: getId, getName, getPrice | TODO | Trả các thuộc tính private tương ứng |
-| Customer.cpp: constructor | TODO | Lưu tên, điện thoại, địa chỉ |
-| Customer.cpp: ba getter | TODO | Trả tham chiếu const tới chuỗi |
-| Rà soát, chuẩn bị dữ liệu sản phẩm | Chờ rà soát | Leader đã tạo sẵn 10 dòng mẫu theo đề |
-| Kiểm thử Product, Customer | Chưa chạy | Tạo đối tượng, đối chiếu mọi getter |
-| Hỗ trợ tài liệu và thuyết trình | Chưa thực hiện | Giải thích đóng gói, constructor, getter |
+| Product.cpp: constructor | Hoàn thành, kiểm thử đạt | Kiểm tra id > 0, tên có nội dung, giá > 0 |
+| Product.cpp: getId, getName, getPrice | Hoàn thành, kiểm thử đạt | Trả các thuộc tính private tương ứng |
+| Customer.cpp: constructor | Hoàn thành, kiểm thử đạt | Lưu và kiểm tra tên, điện thoại, địa chỉ |
+| Customer.cpp: ba getter | Hoàn thành, kiểm thử đạt | Trả tham chiếu const tới chuỗi |
+| Rà soát, chuẩn bị dữ liệu sản phẩm | Hoàn thành, kiểm thử đạt | 10 dòng mẫu hợp lệ; tạo được Product thật từ từng dòng |
+| Kiểm thử Product, Customer | Đã chạy đạt | Getter, bản sao, dữ liệu sai, giới hạn số, chuỗi tiếng Việt |
+| Hỗ trợ tài liệu và thuyết trình | Đã có hướng dẫn trong README; chưa thuyết trình | Đọc phần constructor, getter, đóng gói, sao chép |
 
-Constructor đã có danh sách khởi tạo tối thiểu để stub biên dịch; phải hoàn thiện
-theo TODO rồi xóa lệnh ném logic_error. Không chỉ đổi cờ để xem như đã làm xong.
+Phần code thành viên 3 đã được hoàn thiện theo yêu cầu bổ sung của Leader.
+Product và Customer không còn stub TODO. Các kiểm thử riêng không đồng nghĩa
+với hoàn thành tích hợp giỏ/đơn hàng; phần thành viên 2 vẫn còn TODO.
 
 ## Điều kiện ghép code
 
 - [x] Header và stub liên kết được bằng lệnh G++ trong README.
 - [x] Cờ mặc định false, sáu mục báo chưa sẵn sàng.
 - [x] Kiểm tra độc lập menu, validator, định dạng tiền và helper cộng ngày.
-- [ ] Thành viên 3 hoàn thiện Product và Customer.
+- [x] Thành viên 3 hoàn thiện Product và Customer, kiểm thử riêng đạt.
 - [ ] Thành viên 2 hoàn thiện CartItem, ShoppingCart và ProductFile.
 - [ ] Kiểm tra từng class và xử lý lỗi bộ đọc file.
 - [ ] Leader đổi MEMBER_LOGIC_READY thành true và build lại.

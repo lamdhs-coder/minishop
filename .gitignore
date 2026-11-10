@@ -4,5 +4,8 @@
 *.obj
 *.out
 
+# Kiem thu cuc bo, khong dua len Git
+/tests/
+
 # Hoa don chua thong tin ca nhan
 hoadon_*.txt
