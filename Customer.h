@@ -1,6 +1,5 @@
 #ifndef CUSTOMER_H
 #define CUSTOMER_H
-#include "Customer.h"
 
 #include <string>
 
