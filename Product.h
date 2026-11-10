@@ -3,6 +3,7 @@
 
 #include <string>
 
+// MEMBER 3: Du lieu cua mot san pham. Gia tinh bang VND.
 class Product {
 private:
     int id;
@@ -10,17 +11,10 @@ private:
     long long price;
 
 public:
-    Product();
     Product(int id, const std::string& name, long long price);
-
-    // CH? KHAI BÁO, KHÔNG VI?T THÂN HÀM TRONG FILE .H
     int getId() const;
-    std::string getName() const;
+    const std::string& getName() const;
     long long getPrice() const;
-
-    void setId(int id);
-    void setName(const std::string& name);
-    void setPrice(long long price);
 };
 
 #endif

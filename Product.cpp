@@ -1,30 +1,23 @@
 #include "Product.h"
-
-Product::Product() : id(0), name(""), price(0) {}
+#include <stdexcept>
 
 Product::Product(int id, const std::string& name, long long price)
-    : id(id), name(name), price(price) {}
-
-int Product::getId() const {
-    return id;
+    : id(id), name(name), price(price) {
+    // TODO: MEMBER 3 - Kiem tra id > 0, ten khong rong, price > 0.
+    throw std::logic_error("TODO: MEMBER 3 - Product::Product");
 }
 
-std::string Product::getName() const {
-    return name;
+int Product::getId() const {
+    // TODO: MEMBER 3 - Tra ve ma san pham.
+    throw std::logic_error("TODO: MEMBER 3 - Product::getId");
+}
+
+const std::string& Product::getName() const {
+    // TODO: MEMBER 3 - Tra ve ten san pham.
+    throw std::logic_error("TODO: MEMBER 3 - Product::getName");
 }
 
 long long Product::getPrice() const {
-    return price;
-}
-
-void Product::setId(int id) {
-    this->id = id;
-}
-
-void Product::setName(const std::string& name) {
-    this->name = name;
-}
-
-void Product::setPrice(long long price) {
-    this->price = price;
+    // TODO: MEMBER 3 - Tra ve don gia (long long).
+    throw std::logic_error("TODO: MEMBER 3 - Product::getPrice");
 }

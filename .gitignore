@@ -1,4 +1,21 @@
-*.o
+# Build
 *.exe
-*.win
+*.o
+*.obj
+*.out
+
+# Hoa don chua thong tin ca nhan
+hoadon_*.txt
+# Build
+*.exe
+*.o
+*.obj
+*.out
+
+# Dev-C++ Temp Files
+*.gch
+*.layout
 Makefile.win
+
+# Hoa don chua thong tin ca nhan
+hoadon_*.txt

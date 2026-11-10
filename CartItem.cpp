@@ -1,30 +1,33 @@
 #include "CartItem.h"
+#include <stdexcept>
 
-// Constructor
 CartItem::CartItem(const Product& product, int quantity)
-    : product(product), quantity(quantity) {}
+    : product(product), quantity(quantity) {
+    // TODO: MEMBER 2 - Kiem tra so luong ban dau > 0.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::CartItem");
+}
 
-// Getters
 const Product& CartItem::getProduct() const {
-    return product;
+    // TODO: MEMBER 2 - Tra ve san pham.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::getProduct");
 }
 
 int CartItem::getQuantity() const {
-    return quantity;
+    // TODO: MEMBER 2 - Tra ve so luong.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::getQuantity");
 }
 
-// Tang/giam so luong
 void CartItem::increaseQuantity() {
-    quantity++;
+    // TODO: MEMBER 2 - Tang 1; kiem tra tran int va tran thanh tien.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::increaseQuantity");
 }
 
 void CartItem::decreaseQuantity() {
-    if (quantity > 0) {
-        quantity--;
-    }
+    // TODO: MEMBER 2 - Giam 1; khong cho xuong duoi 0.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::decreaseQuantity");
 }
 
-// Tinh tong tien cho mat hang này (Gia x So luong)
 long long CartItem::getTotalPrice() const {
-    return product.getPrice() * quantity;
+    // TODO: MEMBER 2 - Don gia * so luong; kiem tra tran long long.
+    throw std::logic_error("TODO: MEMBER 2 - CartItem::getTotalPrice");
 }
