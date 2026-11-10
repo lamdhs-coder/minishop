@@ -3,6 +3,8 @@
 *.o
 *.obj
 *.out
+CMakeLists.txt
+./cmake-build-debug
 
 # Kiem thu cuc bo, khong dua len Git
 /tests/
