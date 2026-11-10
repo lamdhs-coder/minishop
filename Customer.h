@@ -11,6 +11,8 @@ private:
     std::string address;
 
 public:
+    // Ten/dia chi phai co noi dung; SDT gom 10 chu so, bat dau bang 0.
+    // Du lieu sai -> nem std::invalid_argument; khong nhap/xuat Console.
     Customer(const std::string& name, const std::string& phone,
              const std::string& address);
     const std::string& getName() const;

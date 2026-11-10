@@ -277,7 +277,7 @@ int main() {
 
     std::cout << "Chao mung ban den voi MiniShop!\n";
     if (!MEMBER_LOGIC_READY) {
-        std::cout << "[TRANG THAI] Phan Leader da viet; dang cho logic MEMBER 2 va MEMBER 3.\n";
+        std::cout << "[TRANG THAI] Phan Leader va MEMBER 3 da viet; dang cho logic MEMBER 2.\n";
     } else {
         try {
             products = loadProductsFromFile("products.txt");
