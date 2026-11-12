@@ -1,47 +1,59 @@
 #include "ShoppingCart.h"
+#include <limits>
 #include <stdexcept>
 
-void ShoppingCart::addProduct(const Product& /* product */) {
-    // TODO: MEMBER 2 - Duyet vector theo id, tang SL hoac emplace_back.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::addProduct");
+void ShoppingCart::addProduct(const Product& product) {
+    for (CartItem& item : items) {
+        if (item.getProduct().getId() == product.getId()) {
+            item.increaseQuantity();
+            return;
+        }
+    }
+    items.emplace_back(product);
 }
-
-bool ShoppingCart::increaseQuantity(int /* productId */) {
-    // TODO: MEMBER 2 - Tim id, tang 1; false neu khong ton tai.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::increaseQuantity");
+bool ShoppingCart::increaseQuantity(int productId) {
+    for (CartItem& item : items) {
+        if (item.getProduct().getId() == productId) {
+            item.increaseQuantity();
+            return true;
+        }
+    }
+    return false;
 }
-
-bool ShoppingCart::decreaseQuantity(int /* productId */) {
-    // TODO: MEMBER 2 - Giam 1; erase dong khi SL tu 1 ve 0.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::decreaseQuantity");
+bool ShoppingCart::decreaseQuantity(int productId) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        if (it->getProduct().getId() == productId) {
+            it->decreaseQuantity();
+            if (it->getQuantity() == 0) items.erase(it);
+            return true;
+        }
+    }
+    return false;
 }
-
-bool ShoppingCart::removeProduct(int /* productId */) {
-    // TODO: MEMBER 2 - Xoa theo id; false neu khong ton tai.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::removeProduct");
+bool ShoppingCart::removeProduct(int productId) {
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        if (it->getProduct().getId() == productId) {
+            items.erase(it);
+            return true;
+        }
+    }
+    return false;
 }
-
-const std::vector<CartItem>& ShoppingCart::getItems() const {
-    // TODO: MEMBER 2 - Tra ve tham chieu const toi items.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::getItems");
-}
-
+const std::vector<CartItem>& ShoppingCart::getItems() const { return items; }
 long long ShoppingCart::getSubtotal() const {
-    // TODO: MEMBER 2 - Cong getTotalPrice(); kiem tra tran tong.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::getSubtotal");
+    long long sum = 0;
+    for (const CartItem& item : items) {
+        const long long value = item.getTotalPrice();
+        if (value > std::numeric_limits<long long>::max() - sum)
+            throw std::overflow_error("Cart subtotal overflow");
+        sum += value;
+    }
+    return sum;
 }
-
 long long ShoppingCart::getTotalQuantity() const {
-    // TODO: MEMBER 2 - Cong so luong cac dong, dung long long.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::getTotalQuantity");
+    long long sum = 0;
+    for (const CartItem& item : items) sum += item.getQuantity();
+    return sum;
 }
-
-bool ShoppingCart::isEmpty() const {
-    // TODO: MEMBER 2 - Tra ve items.empty().
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::isEmpty");
-}
-
-void ShoppingCart::clear() {
-    // TODO: MEMBER 2 - Xoa toan bo items.
-    throw std::logic_error("TODO: MEMBER 2 - ShoppingCart::clear");
-}
+bool ShoppingCart::isEmpty() const { return items.empty(); }
+void ShoppingCart::clear() { items.clear(); }
