@@ -1,5 +1,4 @@
-#ifndef ORDER_H
-#define ORDER_H
+#pragma once
 
 #include <ctime>
 #include <ostream>
@@ -41,5 +40,3 @@ public:
     // Tra ve duong dan da ghi; nem runtime_error neu ghi that bai.
     string saveReceiptToFile(const string& filename = "") const;
 };
-
-#endif

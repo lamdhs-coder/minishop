@@ -1,5 +1,4 @@
-#ifndef PRODUCT_H
-#define PRODUCT_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -27,5 +26,3 @@ public:
 // Dung long long de so sanh chinh xac voi gia VND cua Product.
 vector<Product> filterByPriceRange(const vector<Product>& products,
                                        long long minPrice, long long maxPrice);
-
-#endif

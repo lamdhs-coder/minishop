@@ -1,5 +1,4 @@
-#ifndef CUSTOMER_H
-#define CUSTOMER_H
+#pragma once
 
 #include <string>
 
@@ -21,5 +20,3 @@ public:
     const string& getPhone() const;
     const string& getAddress() const;
 };
-
-#endif

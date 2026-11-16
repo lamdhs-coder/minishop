@@ -1,5 +1,4 @@
-#ifndef PRODUCT_FILE_H
-#define PRODUCT_FILE_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -15,5 +14,3 @@ vector<Product> loadProductsFromFile(const string& filename);
 // Nem exception neu file thieu/khong ghi duoc, ma trung hoac ten sai dinh dang.
 // Khong thay doi vector san pham cua ben goi.
 void appendProductToFile(const string& filename, const Product& product);
-
-#endif
