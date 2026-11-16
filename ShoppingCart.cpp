@@ -3,28 +3,30 @@
 #include <limits>
 #include <stdexcept>
 
+using namespace std;
+
 void ShoppingCart::addProduct(const Product& product) {
     // find_if tra iterator den dong dau tien thoa dieu kien.
     // Lambda dung operator== cua Product de kiem tra trung ma.
-    auto item = std::find_if(items.begin(), items.end(),
+    auto item = find_if(items.begin(), items.end(),
         [&product](const CartItem& cartItem) {
             return cartItem.getProduct() == product;
         });
     if (item != items.end()) {
-        if (item->getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
-            throw std::overflow_error("Cart subtotal overflow");
+        if (item->getProduct().getPrice() > numeric_limits<long long>::max() - getSubtotal())
+            throw overflow_error("Cart subtotal overflow");
         item->increaseQuantity();
         return;
     }
-    if (product.getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
-        throw std::overflow_error("Cart subtotal overflow");
+    if (product.getPrice() > numeric_limits<long long>::max() - getSubtotal())
+        throw overflow_error("Cart subtotal overflow");
     items.emplace_back(product);
 }
 bool ShoppingCart::increaseQuantity(int productId) {
     for (CartItem& item : items) {
         if (item.getProduct().getId() == productId) {
-            if (item.getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
-                throw std::overflow_error("Cart subtotal overflow");
+            if (item.getProduct().getPrice() > numeric_limits<long long>::max() - getSubtotal())
+                throw overflow_error("Cart subtotal overflow");
             item.increaseQuantity();
             return true;
         }
@@ -50,13 +52,13 @@ bool ShoppingCart::removeProduct(int productId) {
     }
     return false;
 }
-const std::vector<CartItem>& ShoppingCart::getItems() const { return items; }
+const vector<CartItem>& ShoppingCart::getItems() const { return items; }
 long long ShoppingCart::getSubtotal() const {
     long long sum = 0;
     for (const CartItem& item : items) {
         const long long value = item.getTotalPrice();
-        if (value > std::numeric_limits<long long>::max() - sum)
-            throw std::overflow_error("Cart subtotal overflow");
+        if (value > numeric_limits<long long>::max() - sum)
+            throw overflow_error("Cart subtotal overflow");
         sum += value;
     }
     return sum;

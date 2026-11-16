@@ -1,5 +1,4 @@
-#ifndef SHIPPING_METHOD_H
-#define SHIPPING_METHOD_H
+#pragma once
 
 // Lop truu tuong: chi quy dinh giao tiep, khong tao truc tiep duoc.
 class ShippingMethod {
@@ -29,5 +28,3 @@ public:
         return DELIVERY_DAYS;
     }
 };
-
-#endif

@@ -11,31 +11,33 @@
 #include "ProductFile.h"
 #include "ShoppingCart.h"
 
+using namespace std;
+
 // Logic cac thanh vien da duoc ghep; bat cac chuc nang tren menu.
 constexpr bool MEMBER_LOGIC_READY = true;
 
-std::string trim(const std::string& text) {
-    const std::size_t first = text.find_first_not_of(" \t\r\n");
-    if (first == std::string::npos) {
+string trim(const string& text) {
+    const size_t first = text.find_first_not_of(" \t\r\n");
+    if (first == string::npos) {
         return "";
     }
-    const std::size_t last = text.find_last_not_of(" \t\r\n");
+    const size_t last = text.find_last_not_of(" \t\r\n");
     return text.substr(first, last - first + 1);
 }
 
-bool readLine(const std::string& prompt, std::string& text) {
-    std::cout << prompt;
-    if (!std::getline(std::cin, text)) {
+bool readLine(const string& prompt, string& text) {
+    cout << prompt;
+    if (!getline(cin, text)) {
         return false; // EOF: thoat luong nhap, khong lap vo han.
     }
     text = trim(text);
     return true;
 }
 
-bool readInt(const std::string& prompt, int minimum, int maximum, int& value) {
-    std::string text;
+bool readInt(const string& prompt, int minimum, int maximum, int& value) {
+    string text;
     while (readLine(prompt, text)) {
-        std::istringstream input(text);
+        istringstream input(text);
         int number;
         char extra;
         // "2abc", "2.5", so qua lon va chuoi rong deu bi tu choi.
@@ -44,26 +46,26 @@ bool readInt(const std::string& prompt, int minimum, int maximum, int& value) {
             value = number;
             return true;
         }
-        std::cout << "[LOI] Vui long nhap so nguyen tu "
+        cout << "[LOI] Vui long nhap so nguyen tu "
                   << minimum << " den " << maximum << ".\n";
     }
     return false;
 }
 
-bool readRequiredText(const std::string& prompt, std::string& text) {
+bool readRequiredText(const string& prompt, string& text) {
     while (readLine(prompt, text)) {
         if (!text.empty()) {
             return true;
         }
-        std::cout << "[LOI] Thong tin khong duoc de trong.\n";
+        cout << "[LOI] Thong tin khong duoc de trong.\n";
     }
     return false;
 }
 
-bool readPrice(const std::string& prompt, long long& price, bool allowZero = true) {
-    std::string text;
+bool readPrice(const string& prompt, long long& price, bool allowZero = true) {
+    string text;
     while (readLine(prompt, text)) {
-        std::istringstream input(text);
+        istringstream input(text);
         long long value;
         char extra;
         if ((input >> value) && !(input >> extra) && value >= 0
@@ -71,15 +73,15 @@ bool readPrice(const std::string& prompt, long long& price, bool allowZero = tru
             price = value;
             return true;
         }
-        std::cout << "[LOI] Gia phai la so nguyen VND "
+        cout << "[LOI] Gia phai la so nguyen VND "
                   << (allowZero ? "khong am" : "lon hon 0") << ", khong vuot "
-                  << std::numeric_limits<long long>::max()
+                  << numeric_limits<long long>::max()
                   << ". Vi du: 250000.\n";
     }
     return false;
 }
 
-bool isValidPhone(const std::string& phone) {
+bool isValidPhone(const string& phone) {
     if (phone.size() != 10 || phone[0] != '0') {
         return false;
     }
@@ -91,17 +93,17 @@ bool isValidPhone(const std::string& phone) {
     return true;
 }
 
-bool readPhone(std::string& phone) {
+bool readPhone(string& phone) {
     while (readLine("So dien thoai (10 chu so, bat dau bang 0): ", phone)) {
         if (isValidPhone(phone)) {
             return true;
         }
-        std::cout << "[LOI] So dien thoai phai gom 10 chu so va bat dau bang 0.\n";
+        cout << "[LOI] So dien thoai phai gom 10 chu so va bat dau bang 0.\n";
     }
     return false;
 }
 
-bool askYesNo(const std::string& prompt, bool& answer) {
+bool askYesNo(const string& prompt, bool& answer) {
     int choice;
     if (!readInt(prompt + " (1: Co, 0: Khong): ", 0, 1, choice)) {
         return false;
@@ -111,12 +113,12 @@ bool askYesNo(const std::string& prompt, bool& answer) {
 }
 
 void waitForMenu() {
-    std::string ignored;
+    string ignored;
     readLine("\nNhan Enter de ve menu chinh...", ignored);
 }
 
 void showMainMenu() {
-    std::cout << "\n==========================================\n"
+    cout << "\n==========================================\n"
               << "                 MINISHOP\n"
               << "            UNG DUNG DAT HANG\n"
               << "==========================================\n"
@@ -132,29 +134,29 @@ void showMainMenu() {
               << "==========================================\n";
 }
 
-std::string shortName(const std::string& name) {
+string shortName(const string& name) {
     return name.size() <= 32 ? name : name.substr(0, 29) + "...";
 }
 
-void showProducts(const std::vector<Product>& products) {
+void showProducts(const vector<Product>& products) {
     if (products.empty()) {
-        std::cout << "[THONG BAO] Khong co san pham de hien thi.\n";
+        cout << "[THONG BAO] Khong co san pham de hien thi.\n";
         return;
     }
-    std::cout << std::string(66, '-') << '\n'
-              << std::left << std::setw(6) << "Ma"
-              << std::setw(32) << "Ten san pham"
-              << std::right << std::setw(28) << "Don gia" << '\n'
-              << std::string(66, '-') << '\n';
+    cout << string(66, '-') << '\n'
+              << left << setw(6) << "Ma"
+              << setw(32) << "Ten san pham"
+              << right << setw(28) << "Don gia" << '\n'
+              << string(66, '-') << '\n';
     for (const Product& product : products) {
-        std::cout << std::left << std::setw(6) << product.getId()
-                  << std::setw(32) << shortName(product.getName())
-                  << std::right << std::setw(28) << formatMoney(product.getPrice()) << '\n';
+        cout << left << setw(6) << product.getId()
+                  << setw(32) << shortName(product.getName())
+                  << right << setw(28) << formatMoney(product.getPrice()) << '\n';
     }
-    std::cout << std::string(66, '-') << '\n';
+    cout << string(66, '-') << '\n';
 }
 
-std::string lowercaseAscii(std::string text) {
+string lowercaseAscii(string text) {
     for (char& letter : text) {
         if (letter >= 'A' && letter <= 'Z') {
             letter = static_cast<char>(letter - 'A' + 'a');
@@ -163,54 +165,54 @@ std::string lowercaseAscii(std::string text) {
     return text;
 }
 
-void searchProducts(const std::vector<Product>& products) {
-    std::string keyword;
+void searchProducts(const vector<Product>& products) {
+    string keyword;
     if (!readRequiredText("Nhap mot phan ten san pham: ", keyword)) {
         return;
     }
     keyword = lowercaseAscii(keyword);
-    std::vector<Product> matches; // Ket qua tim kiem, khong phai gio hang.
+    vector<Product> matches; // Ket qua tim kiem, khong phai gio hang.
     for (const Product& product : products) {
-        if (lowercaseAscii(product.getName()).find(keyword) != std::string::npos) {
+        if (lowercaseAscii(product.getName()).find(keyword) != string::npos) {
             matches.push_back(product);
         }
     }
     if (matches.empty()) {
-        std::cout << "[THONG BAO] Khong tim thay san pham phu hop.\n";
+        cout << "[THONG BAO] Khong tim thay san pham phu hop.\n";
     } else {
         showProducts(matches);
     }
 }
 
-void showProductsByPrice(const std::vector<Product>& products) {
+void showProductsByPrice(const vector<Product>& products) {
     long long minPrice, maxPrice;
     if (!readPrice("Gia thap nhat (VND): ", minPrice)
         || !readPrice("Gia cao nhat (VND): ", maxPrice)) {
         return;
     }
     if (minPrice > maxPrice) {
-        std::cout << "[THONG BAO] Khoang gia bi nguoc, tu doi cho hai moc gia.\n";
+        cout << "[THONG BAO] Khoang gia bi nguoc, tu doi cho hai moc gia.\n";
     }
-    const std::vector<Product> matches = filterByPriceRange(products, minPrice, maxPrice);
+    const vector<Product> matches = filterByPriceRange(products, minPrice, maxPrice);
     if (matches.empty()) {
-        std::cout << "[THONG BAO] Khong co san pham trong khoang gia nay.\n";
+        cout << "[THONG BAO] Khong co san pham trong khoang gia nay.\n";
     } else {
         showProducts(matches);
     }
 }
 
-void addNewProduct(std::vector<Product>& products) {
-    std::cout << "\n==========================================\n"
+void addNewProduct(vector<Product>& products) {
+    cout << "\n==========================================\n"
               << "           THEM SAN PHAM MOI\n"
               << "==========================================\n";
     int id;
     while (true) {
         if (!readInt("Nhap ma san pham (0: Huy): ", 0,
-                     std::numeric_limits<int>::max(), id)) {
+                     numeric_limits<int>::max(), id)) {
             return;
         }
         if (id == 0) {
-            std::cout << "[THONG BAO] Da huy them san pham.\n";
+            cout << "[THONG BAO] Da huy them san pham.\n";
             return;
         }
         bool duplicate = false;
@@ -223,19 +225,19 @@ void addNewProduct(std::vector<Product>& products) {
         if (!duplicate) {
             break;
         }
-        std::cout << "[LOI] Ma san pham da ton tai. Vui long nhap ma khac.\n";
+        cout << "[LOI] Ma san pham da ton tai. Vui long nhap ma khac.\n";
     }
 
-    std::string name;
+    string name;
     while (true) {
         if (!readRequiredText("Nhap ten san pham: ", name)) {
             return;
         }
-        if (name.find_first_not_of(" \t\r\n\f\v") != std::string::npos
-            && name.find_first_of("|\r\n") == std::string::npos) {
+        if (name.find_first_not_of(" \t\r\n\f\v") != string::npos
+            && name.find_first_of("|\r\n") == string::npos) {
             break;
         }
-        std::cout << "[LOI] Ten phai co noi dung, khong chua | hoac xuong dong.\n";
+        cout << "[LOI] Ten phai co noi dung, khong chua | hoac xuong dong.\n";
     }
     long long price;
     if (!readPrice("Nhap gia san pham (VND): ", price, false)) {
@@ -245,58 +247,58 @@ void addNewProduct(std::vector<Product>& products) {
     // Du bo nho truoc khi ghi. Sau khi luu, move Product khong cap phat chuoi lai.
     products.reserve(products.size() + 1);
     appendProductToFile("products.txt", product);
-    products.push_back(std::move(product));
+    products.push_back(move(product));
     const Product& saved = products.back();
-    std::cout << "[THANH CONG] Da them san pham moi vao shop.\n"
+    cout << "[THANH CONG] Da them san pham moi vao shop.\n"
               << "Ma SP : " << saved.getId() << '\n'
               << "Ten SP: " << saved.getName() << '\n'
               << "Gia   : " << formatMoney(saved.getPrice()) << '\n';
 }
 
-void addToCart(const std::vector<Product>& products, ShoppingCart& cart) {
+void addToCart(const vector<Product>& products, ShoppingCart& cart) {
     showProducts(products);
     if (products.empty()) {
         return;
     }
     int productId;
     if (!readInt("Nhap ma san pham (0: Quay lai): ", 0,
-                 std::numeric_limits<int>::max(), productId)
+                 numeric_limits<int>::max(), productId)
         || productId == 0) {
         return;
     }
     for (const Product& product : products) {
         if (product.getId() == productId) {
             cart.addProduct(product); // ShoppingCart tu xu ly san pham trung.
-            std::cout << "[THANH CONG] Da them san pham vao gio.\n";
+            cout << "[THANH CONG] Da them san pham vao gio.\n";
             return;
         }
     }
-    std::cout << "[LOI] Ma san pham khong ton tai.\n";
+    cout << "[LOI] Ma san pham khong ton tai.\n";
 }
 
 void showCart(const ShoppingCart& cart) {
     if (cart.isEmpty()) {
-        std::cout << "[THONG BAO] Gio hang dang rong.\n";
+        cout << "[THONG BAO] Gio hang dang rong.\n";
         return;
     }
-    std::cout << "\nGIO HANG\n";
-    writeItemsTable(std::cout, cart.getItems());
-    std::cout << "Tong so luong: " << cart.getTotalQuantity() << '\n'
+    cout << "\nGIO HANG\n";
+    writeItemsTable(cout, cart.getItems());
+    cout << "Tong so luong: " << cart.getTotalQuantity() << '\n'
               << "Tong tien hang: " << formatMoney(cart.getSubtotal()) << '\n';
-    std::cout << "Ma san pham trong gio: ";
+    cout << "Ma san pham trong gio: ";
     for (const CartItem& item : cart.getItems()) {
-        std::cout << item.getProduct().getId() << " ";
+        cout << item.getProduct().getId() << " ";
     }
-    std::cout << '\n';
+    cout << '\n';
 }
 
 void editCart(ShoppingCart& cart) {
-    while (std::cin) {
+    while (cin) {
         showCart(cart);
         if (cart.isEmpty()) {
             return;
         }
-        std::cout << "\n1. Tang so luong them 1\n"
+        cout << "\n1. Tang so luong them 1\n"
                   << "2. Giam so luong bot 1 (ve 0 thi xoa)\n"
                   << "3. Xoa san pham\n0. Quay lai\n";
         int action;
@@ -305,7 +307,7 @@ void editCart(ShoppingCart& cart) {
         }
         int productId;
         if (!readInt("Nhap ma san pham (0: Quay lai): ", 0,
-                     std::numeric_limits<int>::max(), productId)
+                     numeric_limits<int>::max(), productId)
             || productId == 0) {
             return;
         }
@@ -317,17 +319,17 @@ void editCart(ShoppingCart& cart) {
         } else {
             changed = cart.removeProduct(productId);
         }
-        std::cout << (changed ? "[THANH CONG] Da cap nhat gio hang.\n"
+        cout << (changed ? "[THANH CONG] Da cap nhat gio hang.\n"
                               : "[LOI] Ma san pham khong co trong gio.\n");
     }
 }
 
 void checkout(ShoppingCart& cart) {
     if (cart.isEmpty()) {
-        std::cout << "[LOI] Khong the dat hang khi gio rong.\n";
+        cout << "[LOI] Khong the dat hang khi gio rong.\n";
         return;
     }
-    std::string name, phone, address;
+    string name, phone, address;
     if (!readRequiredText("Ho va ten: ", name) || !readPhone(phone)
         || !readRequiredText("Dia chi giao hang: ", address)) {
         return;
@@ -336,18 +338,18 @@ void checkout(ShoppingCart& cart) {
 
     // Ban xem truoc chi hien thi: khong ghi file, khong sua gio.
     const Order preview(customer, cart.getItems());
-    std::cout << "\n[XEM TRUOC - CHUA XAC NHAN DAT HANG]\n"
+    cout << "\n[XEM TRUOC - CHUA XAC NHAN DAT HANG]\n"
               << preview.getReceiptText();
     bool confirmed;
     if (!askYesNo("Ban xac nhan dat hang?", confirmed) || !confirmed) {
-        std::cout << "[THONG BAO] Chua dat hang. Gio hang duoc giu nguyen.\n";
+        cout << "[THONG BAO] Chua dat hang. Gio hang duoc giu nguyen.\n";
         return;
     }
 
     // Tao lai de lay thoi gian HE THONG ngay sau khi khach xac nhan.
     const Order order(customer, cart.getItems());
     cart.clear(); // Don da giu ban sao, xoa gio khong lam mat hoa don.
-    std::cout << "\n[THANH CONG] Dat hang thanh cong!\n"
+    cout << "\n[THANH CONG] Dat hang thanh cong!\n"
               << order.getReceiptText();
 
     bool save;
@@ -355,33 +357,33 @@ void checkout(ShoppingCart& cart) {
         return;
     }
     try {
-        const std::string path = order.saveReceiptToFile();
-        std::cout << "[THANH CONG] Da luu hoa don: " << path << '\n';
-    } catch (const std::exception& error) {
+        const string path = order.saveReceiptToFile();
+        cout << "[THANH CONG] Da luu hoa don: " << path << '\n';
+    } catch (const exception& error) {
         // Loi luu file khong huy don da xac nhan.
-        std::cout << "[LOI] Don da xac nhan nhung khong luu duoc hoa don: "
+        cout << "[LOI] Don da xac nhan nhung khong luu duoc hoa don: "
                   << error.what() << '\n';
     }
 }
 
 int main() {
-    std::vector<Product> products;
+    vector<Product> products;
     ShoppingCart cart;
 
-    std::cout << "Chao mung ban den voi MiniShop!\n";
+    cout << "Chao mung ban den voi MiniShop!\n";
     if (!MEMBER_LOGIC_READY) {
-        std::cout << "[TRANG THAI] Cac chuc nang chua duoc bat tich hop.\n";
+        cout << "[TRANG THAI] Cac chuc nang chua duoc bat tich hop.\n";
     } else {
         try {
             products = loadProductsFromFile("products.txt");
-        } catch (const std::exception& error) {
-            std::cerr << "[LOI] Khong tai duoc danh sach san pham: "
+        } catch (const exception& error) {
+            cerr << "[LOI] Khong tai duoc danh sach san pham: "
                       << error.what() << "\nHay kiem tra products.txt va chay lai.\n";
             return 1;
         }
     }
 
-    while (std::cin) {
+    while (cin) {
         showMainMenu();
         int choice;
         if (!readInt("Nhap lua chon: ", 0, 8, choice) || choice == 0) {
@@ -389,7 +391,7 @@ int main() {
         }
         // Co tich hop cho phep tam tat cac chuc nang khi ghep code.
         if (!MEMBER_LOGIC_READY) {
-            std::cout << "Chuc nang dang duoc thanh vien phat trien.\n";
+            cout << "Chuc nang dang duoc thanh vien phat trien.\n";
             waitForMenu();
             continue;
         }
@@ -404,11 +406,11 @@ int main() {
                 case 7: showProductsByPrice(products); break;
                 case 8: addNewProduct(products); break;
             }
-        } catch (const std::exception& error) {
-            std::cout << "[LOI] " << error.what() << '\n';
+        } catch (const exception& error) {
+            cout << "[LOI] " << error.what() << '\n';
         }
         waitForMenu();
     }
-    std::cout << "\nCam on ban da su dung MiniShop. Tam biet!\n";
+    cout << "\nCam on ban da su dung MiniShop. Tam biet!\n";
     return 0;
 }
