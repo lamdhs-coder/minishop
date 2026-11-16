@@ -5,15 +5,21 @@
 void ShoppingCart::addProduct(const Product& product) {
     for (CartItem& item : items) {
         if (item.getProduct().getId() == product.getId()) {
+            if (item.getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
+                throw std::overflow_error("Cart subtotal overflow");
             item.increaseQuantity();
             return;
         }
     }
+    if (product.getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
+        throw std::overflow_error("Cart subtotal overflow");
     items.emplace_back(product);
 }
 bool ShoppingCart::increaseQuantity(int productId) {
     for (CartItem& item : items) {
         if (item.getProduct().getId() == productId) {
+            if (item.getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
+                throw std::overflow_error("Cart subtotal overflow");
             item.increaseQuantity();
             return true;
         }
