@@ -7,6 +7,7 @@
 #include <vector>
 #include "Customer.h"
 #include "CartItem.h"
+#include "ShippingMethod.h"
 
 // Hai ham trinh bay dung chung cho Console va hoa don TXT.
 std::string formatMoney(long long amount);
@@ -18,9 +19,14 @@ private:
     std::vector<CartItem> items;
     std::time_t orderTime;
     long long shippingFee;
+    int deliveryDays;
 
 public:
     Order(const Customer& customer, const std::vector<CartItem>& items);
+    // Nhan qua tham chieu lop cha de goi phuong thuc ao cua lop con.
+    // Chi luu gia tri phi/ngay; khong giu tham chieu den shipping.
+    Order(const Customer& customer, const std::vector<CartItem>& items,
+          const ShippingMethod& shipping);
     const Customer& getCustomer() const;
     const std::vector<CartItem>& getItems() const;
     std::string getOrderDate() const;

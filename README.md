@@ -1,35 +1,38 @@
 # MiniShop – Ứng dụng đặt hàng Console
 
-Đồ án OOP nhập môn, dùng C++17 và `std::vector`. Tiền được lưu bằng
-`long long` theo đơn vị VND. Không dùng Qt, CMake hoặc thư viện bên thứ ba.
+Đồ án OOP nhập môn dùng C++17, G++ và STL std::vector. Có 5 class nghiệp vụ chính:
+Product, Customer, CartItem, ShoppingCart và Order; thêm 2 class phụ giao hàng
+ShippingMethod và StandardShipping để minh họa kế thừa/đa hình (tổng 7 class).
+Không dùng Qt, CMake,
+database, server hay thư viện bên thứ ba.
 
-**Trạng thái hiện tại:** phần Leader đã viết đầy đủ source; phần code của thành
-viên 3 (Product, Customer) đã hoàn thiện và kiểm thử. Phần thành viên 2 vẫn là
-khung TODO. Project biên dịch và chạy menu được, nhưng **chưa mua hàng được**.
-Cả sáu mục chức năng đang được chặn bằng cờ
-`MEMBER_LOGIC_READY = false` trong `main.cpp`. Khi chọn, chương trình báo:
+**Trạng thái:** đã ghép code Quốc Vĩ, Bích và bật
+`MEMBER_LOGIC_READY = true` trong main.cpp. Toàn bộ menu đã chạy được với file
+sản phẩm thật, giỏ hàng, đặt hàng và hóa đơn TXT. Source ứng dụng không còn stub TODO.
+Dùng Console; toàn bộ tiền và hai mốc lọc giá là long long theo đơn vị VND.
 
-> Chuc nang dang duoc thanh vien phat trien.
+## Chức năng và phân công
 
-Không dùng dữ liệu giả, không gọi stub để giả lập đặt hàng thành công.
+F01–F06 là chức năng bắt buộc; F07–F11 là chức năng sáng tạo.
+Tình trạng dưới đây dựa trên kiểm thử sau tích hợp.
 
-## Chức năng và tình trạng
+| Mã | Chức năng | Phụ trách | Kết quả |
+| --- | --- | --- | --- |
+| F01 | Đọc products.txt vào vector<Product>, xử lý lỗi file/dữ liệu | Quốc Vĩ | Đạt |
+| F02 | Hiển thị mã, tên, giá theo bảng Console | Lâm | Đạt qua menu |
+| F03 | Thêm sản phẩm vào giỏ; thêm lại cùng mã thì tăng số lượng | Quốc Vĩ xử lý giỏ; Lâm làm menu | Đạt qua menu |
+| F04 | Xem giỏ, số lượng, đơn giá, thành tiền, tổng tiền | Quốc Vĩ tính tiền/số lượng; Lâm hiển thị | Đạt qua menu |
+| F05 | Nhập tên, điện thoại, địa chỉ; kiểm tra trước khi đặt hàng | Lâm làm màn hình; Bích làm Customer | Đạt qua menu |
+| F06 | Xem trước, hủy/xác nhận, ngày giao, phí, tổng thanh toán | Lâm | Đạt qua menu |
+| F07 / S01 | Tìm một phần tên, không phân biệt hoa thường ASCII | Lâm | Đạt qua menu |
+| F08 / S02 | Tăng/giảm/xóa sản phẩm trong giỏ | Quốc Vĩ xử lý giỏ; Lâm làm menu | Đạt qua menu |
+| F09 / S03 | Lưu hóa đơn TXT sau xác nhận, báo lỗi ghi | Lâm | Menu lưu đạt; lỗi ghi đã thử riêng |
+| F10 / S04 | Lọc sản phẩm theo khoảng giá | Bích lọc giá; Lâm gắn vào menu | Hàm và menu đạt |
+| F11 / S05 | Thêm sản phẩm mới, lưu vào file và dùng ngay | Lâm | Hàm ghi và menu đạt |
 
-| Mã | Yêu cầu | Tình trạng thực tế |
-| --- | --- | --- |
-| F01 | Đọc products.txt vào vector<Product>, xử lý thiếu file | TODO thành viên 2; main đã bắt lỗi tải file |
-| F02 | Bảng mã, tên, đơn giá sản phẩm | Product đã hoàn thiện; giao diện chờ bộ đọc file |
-| F03 | Thêm theo mã, trùng mã tăng số lượng | Leader đã nối menu; logic ShoppingCart chờ thành viên 2 |
-| F04 | Xem giỏ, đơn giá, số lượng, thành tiền, tổng | Leader đã viết giao diện; chờ CartItem/ShoppingCart |
-| F05 | Nhập khách hàng, kiểm tra giỏ rỗng | Customer đã hoàn thiện; luồng chờ ShoppingCart |
-| F06 | Xem trước, xác nhận, ngày giao, phí và tổng tiền | Leader đã viết Order và checkout; chưa kiểm thử tích hợp |
-| F07 | Tìm một phần tên, không phân biệt hoa thường ASCII | Leader đã viết; chờ dữ liệu sản phẩm thật |
-| F08 | Tăng, giảm, xóa trong giỏ | Leader đã nối menu; logic chờ thành viên 2 |
-| F09 | Lưu hóa đơn TXT sau xác nhận | Leader đã viết; chưa kiểm thử thực tế với đơn hàng |
+## Cấu trúc và build
 
-## Cấu trúc
-
-Các file nằm trực tiếp trong workspace `shop`, không lồng thêm thư mục:
+Các file được Git theo dõi nằm cùng cấp:
 
 ```text
 shop/
@@ -39,187 +42,291 @@ shop/
   CartItem.h      CartItem.cpp
   ShoppingCart.h  ShoppingCart.cpp
   Order.h         Order.cpp
+  ShippingMethod.h
   ProductFile.h   ProductFile.cpp
   products.txt
-  tests/member3_test.cpp
   README.md
   TASKS.md
   .gitignore
 ```
 
-## Biên dịch và chạy
-
-Mở terminal **tại thư mục chứa các source file** rồi chạy:
+Mở terminal tại thư mục chứa main.cpp và products.txt rồi chạy:
 
 ```bash
 g++ -std=c++17 -Wall -Wextra main.cpp Product.cpp Customer.cpp CartItem.cpp ShoppingCart.cpp Order.cpp ProductFile.cpp -o minishop.exe
 ./minishop.exe
 ```
 
-Dùng được trong Git Bash/MSYS2 và terminal VS Code. Trong PowerShell cũng có thể
-chạy bằng `./minishop.exe` hoặc `.\minishop.exe`. G++ cần có trong PATH.
+Đã kiểm tra bằng G++ 16.2.0, MSYS2 UCRT64. Dùng được trong Git Bash, PowerShell
+và terminal VS Code khi G++ có trong PATH. PowerShell cũng chạy bằng .\minishop.exe.
+Không cần cài thêm thư viện.
 
-Không có bước cài thêm thư viện. Chạy tại thư mục source để đường dẫn tương đối
-`products.txt` và đường dẫn lưu hóa đơn đúng nơi mong muốn.
+Thư mục tests/, file *.exe và hoadon_*.txt bị Git bỏ qua. File test chỉ có cục bộ,
+không có sẵn khi clone repo. Chạy tại thư mục source để đọc đúng dữ liệu và lưu hóa đơn.
 
-## Vai trò của đúng 5 class
+## Menu và cách thử
 
-| Class | Thành viên | Dữ liệu và trách nhiệm |
+```text
+1. Xem danh sach san pham
+2. Tim kiem san pham
+3. Them san pham vao gio
+4. Xem gio hang
+5. Chinh sua gio hang
+6. Dat hang
+7. Loc san pham theo khoang gia
+8. Them san pham moi vao shop
+0. Thoat
+```
+
+Nhấn Enter khi được nhắc để quay lại menu chính.
+
+- Chọn 1: thấy toàn bộ sản phẩm hiện có trong products.txt, không cố định số lượng.
+- Chọn 2, nhập CHUOT: thấy các tên chứa Chuot/chuot.
+- Chọn 7, nhập 250000 rồi 750000: lọc giá trong khoảng, lấy cả hai đầu mút.
+  Nhập 750000 rồi 250000 cũng cho cùng kết quả, kèm thông báo đổi hai mốc.
+- Giá nhập là số nguyên không âm, không có dấu phân cách. Nhập 250000;
+  không nhập 250.000, 250000.5 hoặc chữ.
+- Chọn 3 thêm mã 1 hai lần và mã 2 một lần. Chọn 4: tổng số lượng 3,
+  tiền hàng 1.350.000 VND.
+- Chọn 5 để tăng/giảm từng đơn vị hoặc xóa theo mã; giảm từ 1 về 0 thì xóa dòng.
+- Chọn 6, nhập khách và xem trước. Chọn 0 để hủy, giữ nguyên giỏ; chọn 1
+  để xác nhận rồi chọn lưu hoặc không lưu TXT.
+- Giỏ mẫu trên có phí 30.000 VND, tổng 1.380.000 VND. Sau xác nhận giỏ rỗng,
+  Order vẫn giữ bản sao các mặt hàng.
+
+## S05 – Thêm sản phẩm mới vào shop
+
+Chọn mục 8, nhập ID chưa có, tên và giá nguyên dương VND.
+Ví dụ dùng một ID còn trống, tên Chuot Razer, giá 650000.
+ID 0 là hủy thao tác, không tạo sản phẩm; EOF ở bước nhập cũng không lưu.
+ID âm/chữ/thập phân/tràn int, tên rỗng/toàn khoảng trắng hoặc chứa dấu |,
+giá 0/âm/chữ/thập phân/tràn long long đều bị từ chối và được nhập lại.
+Hàm ghi cũng từ chối tên chứa ký tự xuống dòng để tránh sai định dạng TXT.
+
+Các hàm liên quan:
+
+- main.cpp: addNewProduct nhận tham chiếu tới chính vector products đang dùng.
+  Dùng lại readInt/readRequiredText/readPrice; readPrice có tham số allowZero,
+  mặc định true cho bộ lọc, false khi thêm sản phẩm mới.
+- ProductFile.h/.cpp: appendProductToFile kiểm tra file hiện có và ID trên đĩa,
+  ghi bản sao tạm rồi thay file gốc. Không tạo class quản lý mới hoặc sửa Product.
+
+Trình tự lưu:
+
+1. Tạo Product bằng constructor để kiểm tra dữ liệu.
+2. Reserve trước dung lượng vector, để lỗi cấp phát xảy ra trước khi ghi.
+3. Đọc lại file thật, kiểm tra ID trùng và quyền đọc/ghi. Không tự tạo file
+   products.txt nếu file hiện tại bị thiếu hoặc không đọc được.
+4. Copy nguyên byte file gốc sang products.txt.tmp trong cùng thư mục.
+   Chỉ thêm newline nếu cuối file gốc chưa có; nối sản phẩm mới vào file tạm.
+5. Đóng/kiểm tra ghi và đọc kiểm tra lại file tạm, sau đó filesystem::rename
+   thay file gốc. Nếu lỗi trước khi thay, file gốc không bị ghi dở.
+6. Khi lưu thành công mới push_back sản phẩm vào cùng vector bằng std::move.
+   Product hiện có move constructor không ném lỗi; sau reserve không cần
+   cấp phát lại khi thêm phần tử. std::move chuyển chuỗi thay vì sao chép lại.
+
+Khi lỗi lưu, vector không nhận thêm phần tử và không báo thành công.
+File tạm đã có sẵn không bị ghi đè/xóa tự động; cần kiểm tra nguyên nhân trước
+khi thử lại. Khi lỗi sau khi copy thành công, chương trình cố gắng dọn file tạm.
+Sản phẩm lưu thành công xuất hiện ngay trong xem/tìm/lọc và thêm vào giỏ,
+không cần khởi động lại; mở ứng dụng lần sau vẫn đọc được từ file.
+Giỏ hiện có và các bản sao trong Order không bị thay đổi bởi S05.
+
+### Kiến thức và vấn đáp S05
+
+- Chương 1: Product đóng gói dữ liệu, getter dùng khi ghi file.
+- Chương 2: addNewProduct tạo object bằng constructor có tham số.
+- Chương 7: duyệt vector kiểm tra mã, reserve và push_back cập nhật danh sách.
+- I/O: đọc/ghi bằng fstream, ghi tạm để không nối dở vào file gốc.
+  Không thêm kế thừa, đa hình hoặc template mới chỉ để làm S05.
+
+| Câu hỏi | Trả lời ngắn |
+| --- | --- |
+| Vì sao tạo Product trước khi lưu? | Constructor kiểm tra dữ liệu; getter cung cấp giá trị để ghi, không truy cập private trực tiếp. |
+| Vector nào được cập nhật? | Chính vector products của main, được truyền bằng tham chiếu vào addNewProduct. |
+| Vì sao không push_back trước khi ghi file? | Ghi có thể thất bại; cập nhật trước sẽ khiến màn hình có sản phẩm chưa được lưu. |
+| Vì sao phải dùng file tạm? | Ghi hoặc thay file thất bại sẽ không để bản ghi dở trong file gốc. |
+| Vì sao khởi động lại vẫn thấy sản phẩm? | Bản ghi id|name|price đã được lưu trong products.txt và được bộ đọc hiện có tải lại. |
+
+## Vai trò class và hàm
+
+| Thành phần | Vai trò |
+| --- | --- |
+| Product | Mã, tên, giá; constructor/getter; operator== nhận diện theo mã |
+| Customer | Tên, điện thoại, địa chỉ; kiểm tra thông tin bắt buộc |
+| CartItem | Bản sao Product, số lượng, thành tiền; kiểm tra số lượng và tràn phép nhân |
+| ShoppingCart | vector<CartItem>, find_if để tìm sản phẩm trùng, thêm/tăng/giảm/xóa và tổng giỏ |
+| Order | Bản sao khách/giỏ, thời gian, bản sao phí/ngày giao từ phương thức giao hàng và hóa đơn |
+| ShippingMethod | Lớp trừu tượng, quy định giao tiếp lấy phí và số ngày giao |
+| StandardShipping | Kế thừa public, override giao thường: 30.000 VND và 3 ngày |
+| loadProductsFromFile | Hàm tự do trong ProductFile.cpp, không phải class thứ sáu |
+| filterByPriceRange | Hàm tự do trong Product.cpp, khai báo ở Product.h |
+
+Thuộc tính đều private; getter const chỉ đọc dữ liệu. Chuỗi/vector/đối tượng
+được trả bằng tham chiếu const để tránh sao chép không cần thiết.
+Main giữ một ShoppingCart; vector kết quả tìm/lọc không thay đổi giỏ hoặc danh sách gốc.
+
+## Minh chứng kiến thức cả 7 chương
+
+| Chương | Kiến thức được dùng thật | Mở code tại |
 | --- | --- | --- |
-| Product | 3 | Mã, tên, giá của một sản phẩm |
-| Customer | 3 | Tên, số điện thoại, địa chỉ người mua |
-| CartItem | 2 | Bản sao Product, số lượng, thành tiền một dòng |
-| ShoppingCart | 2 | vector<CartItem>, thêm/tăng/giảm/xóa, tổng giỏ |
-| Order | Leader | Bản sao Customer và vector<CartItem>, thời gian, phí, hóa đơn |
+| 1 – Tổng quan OOP | Đóng gói, trừu tượng hóa, các đối tượng tương tác qua phương thức | Product.h, ShoppingCart.h, Order.h, main.cpp |
+| 2 – Class/Object | Constructor, getter const, đối tượng const, this, static constexpr, protected constructor và destructor mặc định/ảo | Các class; ShippingMethod.h; Order.cpp |
+| 3 – Quá tải toán tử | Product::operator== so sánh theo ID, được gọi khi thêm sản phẩm trùng | Product.h/.cpp, ShoppingCart::addProduct |
+| 4 – Kế thừa | StandardShipping public kế thừa ShippingMethod; khởi tạo lớp cha trước lớp con | ShippingMethod.h |
+| 5 – Đa hình | Abstract class, pure virtual, override; Order gọi qua const ShippingMethod& | ShippingMethod.h, constructor Order có tham số shipping |
+| 6 – Template | parsePositiveInteger<T> tự viết, dùng int cho ID và long long cho giá | ProductFile.cpp |
+| 7 – STL | vector, unordered_set, iterator, erase/emplace_back và std::find_if với lambda | ShoppingCart.cpp, ProductFile.cpp, Product.cpp |
 
-`ProductFile` chỉ chứa hàm tự do `loadProductsFromFile`, không phải class thứ sáu.
-`main.cpp` giữ một ShoppingCart, không quản lý một vector giỏ hàng khác.
-Vector dùng khi tìm kiếm chỉ chứa kết quả sản phẩm.
+Đây là minh chứng trọng tâm từng chương, không ép mọi mục lý thuyết vào source.
+Không thêm friend, setter tùy ý, đa kế thừa hoặc class template không có nhu cầu.
+Copy constructor mặc định vẫn phù hợp với các thuộc tính số/string/vector.
+Các lớp nghiệp vụ không sở hữu con trỏ động nên không cần tự viết destructor
+để giải phóng bộ nhớ. ShippingMethod có destructor virtual cho giao diện đa hình.
 
-Các thuộc tính đều private. Getter có `const` để việc đọc không làm đổi đối tượng.
-Getter trả `const &` cho chuỗi/vector/đối tượng nhằm tránh sao chép không cần thiết;
-không giữ tham chiếu đó lâu hơn vòng đời đối tượng gốc.
+### Toán tử và thuật toán STL
 
-Luồng phối hợp: đọc file → vector<Product> → ShoppingCart chứa CartItem →
-nhập Customer → xem trước Order → xác nhận tạo Order chính thức → lưu TXT.
+Product::operator== chỉ so sánh ID: hai sản phẩm cùng ID là cùng một mặt hàng,
+kể cả khi tên/giá truyền vào khác nhau. Giỏ giữ thông tin của sản phẩm đã có.
+ShoppingCart::addProduct dùng std::find_if với lambda gọi toán tử này.
+Lambda trả true khi tìm thấy cùng sản phẩm; iterator trả về dùng để tăng SL.
+Nếu bằng items.end() thì thêm dòng mới. Kiểm tra tràn tổng vẫn được thực hiện
+trước thay đổi giỏ như trước.
 
-## Phần Leader
+### Kế thừa và đa hình trong đặt hàng
 
-- Các hàm riêng trong main: `showMainMenu`, `showProducts`, `searchProducts`,
-  `addToCart`, `showCart`, `editCart`, `checkout`.
-- Nhập hoàn toàn bằng getline; dùng istringstream kiểm tra số nguyên, khoảng
-  hợp lệ và ký tự thừa. EOF kết thúc luồng nhập, không lặp vô hạn.
-- Tên và địa chỉ phải có nội dung sau khi bỏ khoảng trắng đầu/cuối. Điện thoại
-  phải đúng 10 ký tự số ASCII, bắt đầu bằng 0; giữ kiểu string.
-- Xem trước không lưu file, không xóa giỏ. Từ chối hoặc EOF lúc xác nhận giữ giỏ.
-- Sau đồng ý mới tạo Order chính thức bằng thời gian hệ thống tại thời điểm đó.
-  Order giữ bản sao, nên việc xóa giỏ sau xác nhận không đổi hóa đơn.
-- Phí cố định 30.000 VND. Thành tiền dòng lấy từ CartItem; Order cộng các dòng,
-  kiểm tra tràn số rồi cộng phí. Không dùng float/double.
-- Ngày giao dùng localtime, tăng tm_mday thêm 3, mktime chuẩn hóa cuối
-  tháng/năm và năm nhuận. Ngày giờ theo múi giờ hệ điều hành, không ghi cứng ngày.
-- Hai hàm tự do `formatMoney` và `writeItemsTable` trong Order dùng chung cho
-  giỏ Console và hóa đơn; tên sản phẩm dài được xuống dòng trong hóa đơn.
-- Hóa đơn do getReceiptText tạo thành string; Order không nhập bàn phím.
-- Tên mặc định: `hoadon_YYYYMMDD_HHMMSS.txt`; nếu trùng thì thêm `_1`, `_2`…
-  Tên truyền vào đã tồn tại sẽ bị từ chối ghi đè. Lỗi mở/ghi/đóng file được
-  báo bằng exception, main hiện thông báo rõ. Lỗi lưu không hủy đơn đã xác nhận.
+ShippingMethod có hai phương thức ảo thuần túy getFee/getDeliveryDays nên không
+tạo đối tượng trực tiếp được. Constructor protected dành cho lớp con.
+StandardShipping override cả hai, dùng hằng static constexpr FEE/DELIVERY_DAYS.
+Các hằng này dùng chung cho mọi đối tượng giao thường.
 
-Giao diện dùng tiếng Việt không dấu, iomanip và ký tự ASCII, không cần màu,
-không gọi system("cls") hoặc system("pause"). Dữ liệu mẫu cũng dùng tên ASCII
-để căn cột ổn định. Với tên Unicode, độ rộng hiển thị có thể khác độ dài byte.
+Order có hai constructor:
 
-## Bắt đầu công việc và tích hợp
+- Hai tham số khách/giỏ: giữ cách gọi cũ, ủy quyền cho constructor bên dưới
+  bằng một StandardShipping mặc định.
+- Ba tham số, thêm const ShippingMethod&: gọi hai phương thức ảo để lấy
+  đúng phí/ngày của lớp con, rồi lưu vào shippingFee/deliveryDays theo giá trị.
 
-1. Product và Customer đã hoàn thiện constructor, getter và kiểm thử riêng.
-   Thành viên 3 đọc phần giải thích dưới đây để nắm code khi vấn đáp.
-2. Thành viên 2 hoàn thiện CartItem, ShoppingCart, ProductFile theo TODO.
-   Có thể đọc các header trước để thống nhất giao tiếp với main và Order.
-3. Giữ nguyên chữ ký hàm. ShoppingCart tăng/giảm/xóa trả false khi không có mã,
-   true khi đã thay đổi. addProduct thêm một đơn vị; trùng mã tăng một đơn vị.
-   Giảm từ 1 về 0 phải xóa dòng khỏi vector.
-4. CartItem kiểm tra số lượng và tràn phép nhân; ShoppingCart kiểm tra tràn
-   phép cộng. getSubtotal gọi getTotalPrice của từng dòng. Không nhập bàn phím
-   hoặc in thông báo thành công trong các class dữ liệu.
-5. ProductFile dùng ifstream và getline, tách đúng ba trường bằng dấu `|`.
-   Thiếu file hoặc dòng không hợp lệ ném runtime_error với thông tin rõ ràng.
-   Không biến lỗi đọc thành danh sách rỗng hoặc bỏ qua âm thầm dòng lỗi.
-6. Chỉ sau khi tất cả TODO thành viên hoàn tất và kiểm tra riêng, đổi **một dòng**
-   trong main.cpp thành `constexpr bool MEMBER_LOGIC_READY = true;`.
-7. Build lại và kiểm thử toàn bộ luồng. Nếu bật quá sớm, stub còn sót sẽ ném
-   lỗi TODO; đó là dấu hiệu chưa tích hợp xong, không phải chức năng đã chạy.
+Đây là constructor delegation: constructor hai tham số nhờ constructor ba
+tham số thực hiện phần khởi tạo/kiểm tra chung. Không lặp lại logic tạo đơn.
+Đối tượng giao thường tạm thời tồn tại đủ lâu trong lời gọi constructor.
+Order không giữ con trỏ/tham chiếu đến nó nên không có tham chiếu treo sau khi tạo.
+Sửa/hủy đối tượng giao hàng sau đó không đổi đơn đã tạo.
 
-ShoppingCart dùng constructor mặc định do C++ tạo để khởi tạo vector rỗng;
-các phương thức nghiệp vụ và CartItem vẫn là stub. Không bật cờ khi các TODO
-của thành viên 2 chưa hoàn tất.
+Luồng menu vẫn dùng giao thường, phí 30.000 VND, giao sau 3 ngày; không thêm
+giao nhanh hay mục menu mới. Ngày giao dùng deliveryDays đã lưu.
 
-Dữ liệu mẫu đã được rà soát: 10 dòng đúng định dạng, ID dương không trùng,
-giá dương; đã tạo được Product thật từ cả 10 dòng khi kiểm thử riêng.
+### Cách minh họa khi vấn đáp
 
-## Phần thành viên 3 và gợi ý vấn đáp
+1. Khởi động: bộ đọc thật dùng template với int và long long.
+2. Thêm mã 1 hai lần: mở addProduct để chỉ find_if, lambda và operator==.
+3. Đặt hàng: mở constructor Order hai/ba tham số, theo tới getFee/getDeliveryDays
+   gọi qua lớp cha và override trong StandardShipping.
+4. Chỉ vector, iterator/erase khi giảm mặt hàng về 0 hoặc xóa khỏi giỏ.
+5. Chỉ private/public/const, this và các hằng static của lớp giao hàng.
 
-- Product lưu id, name và price trong thuộc tính private. Constructor dùng
-  danh sách khởi tạo để sao chép dữ liệu, sau đó từ chối id/giá không dương
-  hoặc tên rỗng/chỉ gồm khoảng trắng bằng `std::invalid_argument`.
-- Customer sao chép tên, điện thoại và địa chỉ; từ chối tên/địa chỉ rỗng hoặc
-  chỉ gồm khoảng trắng. Điện thoại phải đúng 10 chữ số ASCII, bắt đầu bằng 0.
-  Lưu bằng string nên không mất số 0 đầu. Constructor không tự cắt khoảng trắng;
-  main đã xử lý đầu vào, còn dữ liệu truyền trực tiếp sai định dạng sẽ bị từ chối.
-- Việc kiểm tra tại class bảo vệ dữ liệu cả khi tạo đối tượng ngoài menu;
-  kiểm tra tại main giúp người dùng được nhập lại ngay khi gõ sai.
-- Mỗi getter chỉ trả thuộc tính tương ứng. `const` sau tên hàm cho phép đọc
-  trên đối tượng const; `const std::string&` tránh sao chép và không cho người
-  gọi sửa chuỗi private qua getter. Hai class không nhập/xuất Console.
-- Dữ liệu được lưu theo giá trị: đổi biến chuỗi nguồn sau khi khởi tạo không
-  đổi đối tượng. Phép sao chép mặc định của C++ cũng sao chép các thuộc tính.
+Hàm lọc giá do Bích phụ trách có chữ ký:
 
-Thành viên 3 cần đọc, chạy và tự giải thích phần này để chuẩn bị thuyết trình;
-việc thuyết trình thực tế chưa được đánh dấu hoàn thành.
+```cpp
+std::vector<Product> filterByPriceRange(
+    const std::vector<Product>& products,
+    long long minPrice,
+    long long maxPrice);
+```
 
-## Tự chạy kiểm thử phần thành viên 3
+Giữ logic được cung cấp: đổi chỗ nếu min > max, duyệt từng sản phẩm, đưa vào
+vector kết quả nếu min <= price <= max. Giữ thứ tự ban đầu.
+Dùng long long thay double để không làm tròn số tiền nguyên lớn.
+Hàm không nhập/xuất Console; kiểm tra giá nhập không âm nằm trong main.
 
-Từ thư mục `shop`, chạy hai lệnh trong Git Bash hoặc PowerShell:
+## Quy tắc dữ liệu và đặt hàng
+
+Mỗi dòng products.txt có đúng dạng id|name|price, ví dụ 1|Chuot Logitech|250000.
+Bộ đọc kiểm tra ID nguyên dương không trùng, tên có nội dung, giá nguyên dương
+trong giới hạn long long. Dòng sai/dòng trống báo lỗi kèm số dòng; thiếu file báo
+lỗi mở file. File rỗng trả danh sách rỗng; ứng dụng thông báo khi xem sản phẩm.
+Main thoát mã 1 nếu tải file thất bại.
+
+Nhập bàn phím dùng getline/istringstream, kiểm tra ký tự thừa và tràn số.
+EOF kết thúc luồng nhập, không lặp vô hạn. Điện thoại là string gồm đúng
+10 chữ số ASCII, bắt đầu bằng 0. Tên/địa chỉ không được rỗng hoặc toàn khoảng trắng.
+
+ShoppingCart kiểm tra tổng trước khi thêm/tăng; thao tác vượt giới hạn bị từ chối
+và giữ nguyên giỏ. Order kiểm tra riêng phép cộng phí trước khi xác nhận thành công.
+
+Xem trước không ghi file/sửa giỏ. Hủy hoặc EOF ở xác nhận giữ giỏ.
+Sau đồng ý mới tạo Order chính thức bằng thời gian hệ thống lúc xác nhận.
+Giao thường cộng 3 ngày lịch bằng localtime/mktime, chuẩn hóa cuối tháng/năm và năm nhuận.
+Phí và số ngày được lấy qua giao tiếp ShippingMethod rồi lưu vào Order;
+giá trị âm bị từ chối và phép cộng số ngày có kiểm tra tràn.
+Ngày giờ theo múi giờ hệ điều hành; tiền dùng long long, không float/double.
+
+Hóa đơn chứa khách/điện thoại/địa chỉ, ngày giờ đặt, ngày giao dự kiến, danh sách
+sản phẩm, số lượng, đơn giá, thành tiền, tiền hàng, phí và tổng thanh toán.
+Tên mặc định hoadon_YYYYMMDD_HHMMSS.txt, thêm hậu tố khi trùng.
+Tên truyền vào đã tồn tại bị từ chối ghi đè. Lỗi mở/ghi/đóng file được báo rõ;
+lỗi lưu không hủy đơn đã xác nhận.
+
+## Kiểm thử sau tích hợp
+
+| Nhóm | Kết quả | Phạm vi |
+| --- | --- | --- |
+| Build C++17 -Wall -Wextra | Đạt, không cảnh báo | Đủ source thực tế |
+| Product, Customer, bộ lọc | 42 PASS, 0 FAIL | Getter, bản sao, dữ liệu sai, giới hạn số và lọc giá |
+| Bổ sung OOP 7 chương | 23 PASS, 0 FAIL | operator==, find_if, abstract/inheritance/static, virtual dispatch, destructor ảo và bản sao phí/ngày |
+| Bộ đọc, giỏ, Order, hóa đơn | 59 PASS, 0 FAIL | File thật/thiếu/sai, mã trùng, tràn số, snapshot, ngày, tiền và ghi file |
+| Chạy EXE qua menu | 18 PASS, 0 FAIL | Xem/tìm/lọc, giỏ, nhập khách, hủy/EOF, xác nhận, lưu/không lưu, lỗi tải file |
+| S05 – Ghi file | 16 PASS, 0 FAIL | Lưu/đọc lại, giữ byte cũ, mã trùng, tên lỗi, file thiếu/sai/chỉ đọc, thiếu newline và file tạm có sẵn |
+| S05 – Menu và tính nhất quán | 18 PASS, 0 FAIL | Nhập sai, hủy/EOF, xem/tìm/lọc/thêm giỏ ngay, restart; lỗi chỉ đọc/khóa thay file không cập nhật vector |
+
+Các nhóm có thể trùng phạm vi, không cộng thành số chức năng.
+Bộ kiểm thử tích hợp dùng thư mục tạm chứa bản sao products.txt và hóa đơn thử,
+không sửa dữ liệu project và không thay bộ đọc thật bằng mock.
+
+Nếu có tests/member3_test.cpp cục bộ, kiểm tra Product, Customer và lọc giá của Bích bằng:
 
 ```bash
 g++ -std=c++17 -Wall -Wextra tests/member3_test.cpp Product.cpp Customer.cpp -o test_member3.exe
 ./test_member3.exe
 ```
 
-File kiểm thử có main riêng, vì vậy **không thêm main.cpp của ứng dụng** vào
-lệnh trên. Không cần bật MEMBER_LOGIC_READY và không cần phần thành viên 2.
-Chương trình tự chạy 32 kiểm tra, in từng dòng PASS/FAIL; kết quả đúng là
-`Ket qua: 32 PASS, 0 FAIL`. Khi có lỗi, chương trình trả mã thoát 1.
+Kết quả hiện tại: 42 PASS, 0 FAIL. Không thêm main.cpp của ứng dụng vào lệnh test
+vì file test có main riêng.
 
-Kiểm thử gồm constructor/getter, lưu trong vector, sao chép dữ liệu, giới hạn
-ID/giá, tên/địa chỉ rỗng hoặc toàn khoảng trắng và điện thoại sai định dạng.
-Đây là kiểm thử riêng hai class; luồng mua hàng trên menu vẫn chờ thành viên 2.
+Nếu có tests/s05_test.cpp cục bộ:
 
-## Kiểm tra đã thực sự chạy
+```bash
+g++ -std=c++17 -Wall -Wextra tests/s05_test.cpp Product.cpp ProductFile.cpp -o test_s05.exe
+./test_s05.exe
+```
 
-Đã kiểm tra bằng **G++ 16.2.0 (MSYS2 UCRT64)**:
+Bộ test ghi file tự tạo thư mục tạm ngoài repo rồi dọn sau kiểm tra.
+Kết quả: 16 PASS, 0 FAIL. Kiểm thử S05 qua menu dùng bản sao dữ liệu hiện tại;
+đã xác nhận hash products.txt thật không thay đổi.
 
-| Kiểm tra | Kết quả và phạm vi |
-| --- | --- |
-| Lệnh build C++17 -Wall -Wextra ở trên | Thành công, không cảnh báo source project |
-| Khởi động, hiển thị menu, chọn 0 | Chạy được, thoát bình thường |
-| Menu nhập chữ, ngoài khoảng, âm, ký tự thừa | Báo lỗi và cho nhập lại |
-| Lần lượt chọn cả 6 mục khi cờ false | Đều báo đang phát triển; không gọi stub, không báo đặt hàng thành công |
-| EOF tại menu và hàm nhập số | Thoát được, không lặp vô hạn |
-| Hàm kiểm tra tên/địa chỉ bắt buộc | Từ chối khoảng trắng/rỗng và cho nhập lại |
-| Hàm kiểm tra điện thoại | Chấp nhận 0901234567; từ chối sai độ dài, đầu số, chữ, khoảng trắng bên trong |
-| Hàm định dạng tiền | Đúng với 0, 999, 1000, 1380000, giới hạn long long |
-| Hàm cộng ngày được Order sử dụng | Đúng qua cuối tháng/năm, tháng 2 năm nhuận và thường |
-| Product: constructor, getter, sao chép, lưu trong vector | Đạt; kiểm tra giá 1 và giới hạn long long, ID giới hạn int, tên dài |
-| Product: đầu vào không hợp lệ | Từ chối ID/giá 0 hoặc âm, tên rỗng hoặc chỉ khoảng trắng |
-| Customer: constructor, getter, sao chép | Đạt; giữ số 0 đầu, lưu chuỗi tiếng Việt, độc lập với biến nguồn |
-| Customer: đầu vào không hợp lệ | Từ chối tên/địa chỉ rỗng hoặc chỉ khoảng trắng; điện thoại sai độ dài, đầu số, chữ hoặc khoảng trắng |
-| products.txt và Product thật | Đã tạo đủ 10 Product, đối chiếu mã và giá mẫu; không dùng bộ đọc file TODO |
+Nếu có tests/oop_test.cpp cục bộ, chạy kiểm thử kiến thức OOP mới:
 
-Các kiểm tra menu, hàm nhập, ngày và tiền dùng bộ chạy kiểm tra tạm thời.
-Kiểm thử Product/Customer có thể chạy lại bằng `tests/member3_test.cpp`,
-không cần framework. **Kiểm tra hàm nhập không có nghĩa đã
-chạy được checkout. Kiểm tra hàm cộng ngày không thay thế kiểm thử Order.**
+```bash
+g++ -std=c++17 -Wall -Wextra tests/oop_test.cpp Product.cpp Customer.cpp CartItem.cpp ShoppingCart.cpp Order.cpp -o test_oop.exe
+./test_oop.exe
+```
 
-**Chưa chạy thực tế do phụ thuộc TODO:** khởi tạo đơn với dữ liệu thật, bản sao
-khách/giỏ, phí và tổng tiền của Order, nội dung đầy đủ của hóa đơn, ghi file thành
-công/thất bại, từ chối xác nhận giữ giỏ, các chức năng F01–F09 từ menu sau tích hợp.
-Các phần này mới được viết và rà soát source, không được coi là PASS.
+Kết quả: 23 PASS, 0 FAIL. Test dùng thêm một lớp giao hàng chỉ trong test để
+chứng minh Order thực thi override theo kiểu thực tế, không ghi cứng giá trị.
+Lớp test này không được dùng trong ứng dụng hoặc bổ sung vào menu.
 
-## Kiểm thử sau tích hợp
+## Giới hạn và bàn giao
 
-- Đọc đủ 10 sản phẩm; thử thiếu products.txt và dòng dữ liệu sai.
-- Thêm cùng mã hai lần: một dòng, SL 2; thử mã không tồn tại.
-- Tìm "CHUOT": thấy các sản phẩm có "Chuot"; thử từ khóa không có kết quả.
-- Tăng, giảm, xóa; giảm SL 1 thì mất dòng; không có số lượng âm.
-- Giỏ rỗng không được đặt. Kiểm tra tổng số lượng và thành tiền.
-- Tên/địa chỉ rỗng phải nhập lại; điện thoại sai phải nhập lại.
-- Thử từ chối xác nhận: toàn bộ giỏ giữ nguyên, không có file mới.
-- Xác nhận: ngày giờ là lúc xác nhận, giao sau 3 ngày, phí 30.000 VND.
-- Với Chuot Logitech SL 2 và Ban phim AKKO SL 1: tạm tính 1.350.000,
-  tổng 1.380.000 VND. Sau thành công giỏ rỗng, hóa đơn vẫn đủ dữ liệu.
-- Chọn không lưu thì không có file. Chọn lưu thì nội dung đúng bản in.
-- Gọi saveReceiptToFile với đường dẫn không hợp lệ: phải báo lỗi ghi.
-  Lưu hai lần cùng giây phải có hai tên khác nhau.
-- Thử tên sản phẩm dài và giá/số lượng lớn; không vỡ cột hoặc tràn số âm.
+Console dùng tiếng Việt không dấu, cột cố định, không cần màu; không gọi
+system("cls") hoặc system("pause"). Bảng hóa đơn rộng 96 ký tự; terminal nên rộng
+110–120 cột. Tên Unicode hoặc số tiền cực dài có thể vượt độ rộng cột; đây là
+giới hạn trình bày, không thay đổi số tiền lưu trong dữ liệu.
 
-Xem [TASKS.md](TASKS.md) để theo dõi phân công và trạng thái bàn giao.
+Trong các trường hợp đã kiểm thử, không còn chức năng bắt buộc bị chặn bởi TODO.
+S05 dành cho một tiến trình Console; không có khóa để nhiều ứng dụng cùng sửa file.
+Chưa mô phỏng đĩa đầy, mất điện hoặc tiến trình bị ngắt giữa chừng; không coi các
+trường hợp này là PASS. File tạm có thể cần kiểm tra/dọn thủ công sau gián đoạn.
+Cả nhóm vẫn cần chạy demo trên máy mình, đọc hiểu code và chuẩn bị vấn đáp.
+Việc thuyết trình thực tế chưa được coi là hoàn thành.
+
+Xem [TASKS.md](TASKS.md) để theo dõi phân công.

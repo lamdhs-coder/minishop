@@ -1,15 +1,20 @@
 #include "ShoppingCart.h"
+#include <algorithm>
 #include <limits>
 #include <stdexcept>
 
 void ShoppingCart::addProduct(const Product& product) {
-    for (CartItem& item : items) {
-        if (item.getProduct().getId() == product.getId()) {
-            if (item.getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
-                throw std::overflow_error("Cart subtotal overflow");
-            item.increaseQuantity();
-            return;
-        }
+    // find_if tra iterator den dong dau tien thoa dieu kien.
+    // Lambda dung operator== cua Product de kiem tra trung ma.
+    auto item = std::find_if(items.begin(), items.end(),
+        [&product](const CartItem& cartItem) {
+            return cartItem.getProduct() == product;
+        });
+    if (item != items.end()) {
+        if (item->getProduct().getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
+            throw std::overflow_error("Cart subtotal overflow");
+        item->increaseQuantity();
+        return;
     }
     if (product.getPrice() > std::numeric_limits<long long>::max() - getSubtotal())
         throw std::overflow_error("Cart subtotal overflow");
