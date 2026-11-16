@@ -1,25 +1,26 @@
 #pragma once
 
-#include <vector>
 #include "CartItem.h"
 
-using namespace std;
-
-// MEMBER 2: Noi duy nhat quan ly cac thay doi trong gio hang.
 class ShoppingCart {
+public:
+    static const int MAX_ITEMS = 100;
+
 private:
-    vector<CartItem> items;
+    CartItem items[MAX_ITEMS];
+    int itemCount;
+    int findProduct(int productId) const;
 
 public:
-    // Them moi voi SL 1; neu trung id thi tang SL 1.
-    void addProduct(const Product& product);
-    // Tra false neu khong tim thay id; true khi da thay doi.
+    ShoppingCart();
+    bool addProduct(const Product& product);
     bool increaseQuantity(int productId);
     bool decreaseQuantity(int productId);
     bool removeProduct(int productId);
-    const vector<CartItem>& getItems() const;
+    int getItemCount() const;
     long long getSubtotal() const;
-    long long getTotalQuantity() const;
+    int getTotalQuantity() const;
     bool isEmpty() const;
     void clear();
+    void print() const;
 };

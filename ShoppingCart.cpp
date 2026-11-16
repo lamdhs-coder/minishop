@@ -1,72 +1,107 @@
 #include "ShoppingCart.h"
-#include <algorithm>
-#include <limits>
-#include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
-void ShoppingCart::addProduct(const Product& product) {
-    // find_if tra iterator den dong dau tien thoa dieu kien.
-    // Lambda dung operator== cua Product de kiem tra trung ma.
-    auto item = find_if(items.begin(), items.end(),
-        [&product](const CartItem& cartItem) {
-            return cartItem.getProduct() == product;
-        });
-    if (item != items.end()) {
-        if (item->getProduct().getPrice() > numeric_limits<long long>::max() - getSubtotal())
-            throw overflow_error("Cart subtotal overflow");
-        item->increaseQuantity();
+ShoppingCart::ShoppingCart() {
+    itemCount = 0;
+}
+
+int ShoppingCart::findProduct(int productId) const {
+    for (int i = 0; i < itemCount; i++) {
+        if (items[i].getProduct().getId() == productId) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+bool ShoppingCart::addProduct(const Product& product) {
+    if (!product.isValid()) {
+        return false;
+    }
+    for (int i = 0; i < itemCount; i++) {
+        if (items[i].getProduct() == product) {
+            return items[i].increaseQuantity();
+        }
+    }
+    if (itemCount == MAX_ITEMS) {
+        return false;
+    }
+    items[itemCount] = CartItem(product);
+    itemCount++;
+    return true;
+}
+
+bool ShoppingCart::increaseQuantity(int productId) {
+    int index = findProduct(productId);
+    if (index == -1) {
+        return false;
+    }
+    return items[index].increaseQuantity();
+}
+
+bool ShoppingCart::decreaseQuantity(int productId) {
+    int index = findProduct(productId);
+    if (index == -1) {
+        return false;
+    }
+    items[index].decreaseQuantity();
+    if (items[index].getQuantity() == 0) {
+        removeProduct(productId);
+    }
+    return true;
+}
+
+bool ShoppingCart::removeProduct(int productId) {
+    int index = findProduct(productId);
+    if (index == -1) {
+        return false;
+    }
+    // Don cac phan tu phia sau sang trai mot vi tri.
+    for (int i = index; i < itemCount - 1; i++) {
+        items[i] = items[i + 1];
+    }
+    itemCount--;
+    return true;
+}
+
+int ShoppingCart::getItemCount() const {
+    return itemCount;
+}
+
+long long ShoppingCart::getSubtotal() const {
+    long long total = 0;
+    for (int i = 0; i < itemCount; i++) {
+        total += items[i].getTotalPrice();
+    }
+    return total;
+}
+
+int ShoppingCart::getTotalQuantity() const {
+    int total = 0;
+    for (int i = 0; i < itemCount; i++) {
+        total += items[i].getQuantity();
+    }
+    return total;
+}
+
+bool ShoppingCart::isEmpty() const {
+    return itemCount == 0;
+}
+
+void ShoppingCart::clear() {
+    itemCount = 0;
+}
+
+void ShoppingCart::print() const {
+    if (isEmpty()) {
+        cout << "Gio hang dang rong.\n";
         return;
     }
-    if (product.getPrice() > numeric_limits<long long>::max() - getSubtotal())
-        throw overflow_error("Cart subtotal overflow");
-    items.emplace_back(product);
-}
-bool ShoppingCart::increaseQuantity(int productId) {
-    for (CartItem& item : items) {
-        if (item.getProduct().getId() == productId) {
-            if (item.getProduct().getPrice() > numeric_limits<long long>::max() - getSubtotal())
-                throw overflow_error("Cart subtotal overflow");
-            item.increaseQuantity();
-            return true;
-        }
+    for (int i = 0; i < itemCount; i++) {
+        items[i].print();
     }
-    return false;
+    cout << "Tong so luong: " << getTotalQuantity() << '\n';
+    cout << "Tong tien hang: " << getSubtotal() << " VND\n";
 }
-bool ShoppingCart::decreaseQuantity(int productId) {
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        if (it->getProduct().getId() == productId) {
-            it->decreaseQuantity();
-            if (it->getQuantity() == 0) items.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
-bool ShoppingCart::removeProduct(int productId) {
-    for (auto it = items.begin(); it != items.end(); ++it) {
-        if (it->getProduct().getId() == productId) {
-            items.erase(it);
-            return true;
-        }
-    }
-    return false;
-}
-const vector<CartItem>& ShoppingCart::getItems() const { return items; }
-long long ShoppingCart::getSubtotal() const {
-    long long sum = 0;
-    for (const CartItem& item : items) {
-        const long long value = item.getTotalPrice();
-        if (value > numeric_limits<long long>::max() - sum)
-            throw overflow_error("Cart subtotal overflow");
-        sum += value;
-    }
-    return sum;
-}
-long long ShoppingCart::getTotalQuantity() const {
-    long long sum = 0;
-    for (const CartItem& item : items) sum += item.getQuantity();
-    return sum;
-}
-bool ShoppingCart::isEmpty() const { return items.empty(); }
-void ShoppingCart::clear() { items.clear(); }

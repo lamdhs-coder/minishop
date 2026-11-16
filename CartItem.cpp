@@ -1,36 +1,43 @@
 #include "CartItem.h"
-#include <limits>
-#include <stdexcept>
+#include <iostream>
 
 using namespace std;
 
-CartItem::CartItem(const Product &product, int quantity)
-    : product(product), quantity(quantity) {
-    if (quantity <= 0) throw invalid_argument("Quantity must be positive");
-    (void) getTotalPrice();
+CartItem::CartItem(const Product& product, int quantity) : product(product) {
+    this->quantity = 0;
+    if (product.isValid() && quantity > 0 && quantity <= MAX_QUANTITY) {
+        this->quantity = quantity;
+    }
 }
 
-const Product &CartItem::getProduct() const { return product; }
-int CartItem::getQuantity() const { return quantity; }
+const Product& CartItem::getProduct() const {
+    return product;
+}
 
-void CartItem::increaseQuantity() {
-    if (quantity == numeric_limits<int>::max()) throw overflow_error("Quantity overflow");
-    const long long price = product.getPrice();
-    if (price < 0) throw invalid_argument("Negative product price");
-    if (price != 0 && static_cast<long long>(quantity + 1) > numeric_limits<long long>::max() / price)
-        throw overflow_error("Item total overflow");
-    ++quantity;
+int CartItem::getQuantity() const {
+    return quantity;
+}
+
+bool CartItem::increaseQuantity() {
+    if (!product.isValid() || quantity >= MAX_QUANTITY) {
+        return false;
+    }
+    quantity++;
+    return true;
 }
 
 void CartItem::decreaseQuantity() {
-    if (quantity == 0) throw underflow_error("Quantity cannot be negative");
-    --quantity;
+    if (quantity > 0) {
+        quantity--;
+    }
 }
 
 long long CartItem::getTotalPrice() const {
-    const long long price = product.getPrice();
-    if (price < 0) throw invalid_argument("Negative product price");
-    if (price != 0 && quantity > numeric_limits<long long>::max() / price)
-        throw overflow_error("Item total overflow");
-    return price * quantity;
+    return product.getPrice() * quantity;
+}
+
+void CartItem::print() const {
+    cout << product.getId() << " | " << product.getName()
+         << " | SL: " << quantity << " | Don gia: " << product.getPrice()
+         << " | Thanh tien: " << getTotalPrice() << " VND\n";
 }
