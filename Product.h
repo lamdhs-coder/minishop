@@ -1,28 +1,19 @@
 #pragma once
 
-#include <string>
-#include <vector>
-
-using namespace std;
-
-// MEMBER 3: Du lieu cua mot san pham. Gia tinh bang VND.
 class Product {
 private:
     int id;
-    string name;
+    char name[100];
     long long price;
 
 public:
-    // Nem invalid_argument neu id/gia <= 0 hoac ten chi co khoang trang.
-    Product(int id, const string& name, long long price);
-    int getId() const;
-    const string& getName() const;
-    long long getPrice() const;
-    // Hai san pham cung ma duoc xem la cung mot mat hang.
-    bool operator==(const Product& other) const;
-};
+    static const int MAX_PRICE = 1000000000;
 
-// MEMBER 3: Loc ca hai dau mut; tu doi cho neu nhap khoang gia nguoc.
-// Dung long long de so sanh chinh xac voi gia VND cua Product.
-vector<Product> filterByPriceRange(const vector<Product>& products,
-                                       long long minPrice, long long maxPrice);
+    Product(int id = 0, const char name[] = "", long long price = 0);
+    int getId() const;
+    const char* getName() const;
+    long long getPrice() const;
+    bool isValid() const;
+    bool operator==(const Product& other) const;
+    void print() const;
+};
