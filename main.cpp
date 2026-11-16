@@ -5,13 +5,14 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <utility>
 
 #include "Order.h"
 #include "ProductFile.h"
 #include "ShoppingCart.h"
 
-// Chi doi thanh true SAU KHI MEMBER 2 va MEMBER 3 hoan thanh cac TODO.
-constexpr bool MEMBER_LOGIC_READY = false;
+// Logic cac thanh vien da duoc ghep; bat cac chuc nang tren menu.
+constexpr bool MEMBER_LOGIC_READY = true;
 
 std::string trim(const std::string& text) {
     const std::size_t first = text.find_first_not_of(" \t\r\n");
@@ -55,6 +56,25 @@ bool readRequiredText(const std::string& prompt, std::string& text) {
             return true;
         }
         std::cout << "[LOI] Thong tin khong duoc de trong.\n";
+    }
+    return false;
+}
+
+bool readPrice(const std::string& prompt, long long& price, bool allowZero = true) {
+    std::string text;
+    while (readLine(prompt, text)) {
+        std::istringstream input(text);
+        long long value;
+        char extra;
+        if ((input >> value) && !(input >> extra) && value >= 0
+            && (allowZero || value > 0)) {
+            price = value;
+            return true;
+        }
+        std::cout << "[LOI] Gia phai la so nguyen VND "
+                  << (allowZero ? "khong am" : "lon hon 0") << ", khong vuot "
+                  << std::numeric_limits<long long>::max()
+                  << ". Vi du: 250000.\n";
     }
     return false;
 }
@@ -106,6 +126,8 @@ void showMainMenu() {
               << "4. Xem gio hang\n"
               << "5. Chinh sua gio hang\n"
               << "6. Dat hang\n"
+              << "7. Loc san pham theo khoang gia\n"
+              << "8. Them san pham moi vao shop\n"
               << "0. Thoat\n"
               << "==========================================\n";
 }
@@ -158,6 +180,77 @@ void searchProducts(const std::vector<Product>& products) {
     } else {
         showProducts(matches);
     }
+}
+
+void showProductsByPrice(const std::vector<Product>& products) {
+    long long minPrice, maxPrice;
+    if (!readPrice("Gia thap nhat (VND): ", minPrice)
+        || !readPrice("Gia cao nhat (VND): ", maxPrice)) {
+        return;
+    }
+    if (minPrice > maxPrice) {
+        std::cout << "[THONG BAO] Khoang gia bi nguoc, tu doi cho hai moc gia.\n";
+    }
+    const std::vector<Product> matches = filterByPriceRange(products, minPrice, maxPrice);
+    if (matches.empty()) {
+        std::cout << "[THONG BAO] Khong co san pham trong khoang gia nay.\n";
+    } else {
+        showProducts(matches);
+    }
+}
+
+void addNewProduct(std::vector<Product>& products) {
+    std::cout << "\n==========================================\n"
+              << "           THEM SAN PHAM MOI\n"
+              << "==========================================\n";
+    int id;
+    while (true) {
+        if (!readInt("Nhap ma san pham (0: Huy): ", 0,
+                     std::numeric_limits<int>::max(), id)) {
+            return;
+        }
+        if (id == 0) {
+            std::cout << "[THONG BAO] Da huy them san pham.\n";
+            return;
+        }
+        bool duplicate = false;
+        for (const Product& item : products) {
+            if (item.getId() == id) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate) {
+            break;
+        }
+        std::cout << "[LOI] Ma san pham da ton tai. Vui long nhap ma khac.\n";
+    }
+
+    std::string name;
+    while (true) {
+        if (!readRequiredText("Nhap ten san pham: ", name)) {
+            return;
+        }
+        if (name.find_first_not_of(" \t\r\n\f\v") != std::string::npos
+            && name.find_first_of("|\r\n") == std::string::npos) {
+            break;
+        }
+        std::cout << "[LOI] Ten phai co noi dung, khong chua | hoac xuong dong.\n";
+    }
+    long long price;
+    if (!readPrice("Nhap gia san pham (VND): ", price, false)) {
+        return;
+    }
+    Product product(id, name, price);
+    // Du bo nho truoc khi ghi. Sau khi luu, move Product khong cap phat chuoi lai.
+    products.reserve(products.size() + 1);
+    appendProductToFile("products.txt", product);
+    products.push_back(std::move(product));
+    const Product& saved = products.back();
+    std::cout << "[THANH CONG] Da them san pham moi vao shop.\n"
+              << "Ma SP : " << saved.getId() << '\n'
+              << "Ten SP: " << saved.getName() << '\n'
+              << "Gia   : " << formatMoney(saved.getPrice()) << '\n';
 }
 
 void addToCart(const std::vector<Product>& products, ShoppingCart& cart) {
@@ -273,11 +366,11 @@ void checkout(ShoppingCart& cart) {
 
 int main() {
     std::vector<Product> products;
-    ShoppingCart cart; // Constructor mac dinh chi tao vector, khong goi stub.
+    ShoppingCart cart;
 
     std::cout << "Chao mung ban den voi MiniShop!\n";
     if (!MEMBER_LOGIC_READY) {
-        std::cout << "[TRANG THAI] Phan Leader va MEMBER 3 da viet; dang cho logic MEMBER 2.\n";
+        std::cout << "[TRANG THAI] Cac chuc nang chua duoc bat tich hop.\n";
     } else {
         try {
             products = loadProductsFromFile("products.txt");
@@ -291,10 +384,10 @@ int main() {
     while (std::cin) {
         showMainMenu();
         int choice;
-        if (!readInt("Nhap lua chon: ", 0, 6, choice) || choice == 0) {
+        if (!readInt("Nhap lua chon: ", 0, 8, choice) || choice == 0) {
             break;
         }
-        // Chan tat ca 6 muc truoc khi goi bat ky ham TODO nao.
+        // Co tich hop cho phep tam tat cac chuc nang khi ghep code.
         if (!MEMBER_LOGIC_READY) {
             std::cout << "Chuc nang dang duoc thanh vien phat trien.\n";
             waitForMenu();
@@ -308,6 +401,8 @@ int main() {
                 case 4: showCart(cart); break;
                 case 5: editCart(cart); break;
                 case 6: checkout(cart); break;
+                case 7: showProductsByPrice(products); break;
+                case 8: addNewProduct(products); break;
             }
         } catch (const std::exception& error) {
             std::cout << "[LOI] " << error.what() << '\n';

@@ -1,72 +1,102 @@
 # Phân công MiniShop
 
-“Đã viết source” chỉ nói về phần triển khai. Những mục phụ thuộc TODO của thành
-viên khác chưa được kiểm thử tích hợp và chưa được đánh dấu hoàn thành toàn bộ.
+Nhóm gồm **Lâm, Quốc Vĩ và Bích**. Bảng dưới ghi rõ chức năng mỗi người phụ trách.
+Các chức năng đã được ghép vào chương trình và kiểm tra chạy được.
+**S05 – Thêm sản phẩm mới vào shop là phần Lâm làm.**
 
-## Leader
+## Bảng phân công nhanh
 
-| Công việc | Trạng thái |
+| Người | Phần phụ trách |
 | --- | --- |
-| L01: Cấu trúc, main, header/source, dữ liệu mẫu, hướng dẫn build | Đã tạo; build thành công |
-| L02: Console, bảng, phân cách nghìn, thông báo, quay lại menu | Đã viết; menu/định dạng tiền đã kiểm tra; bảng có dữ liệu chờ tích hợp |
-| L03: Menu theo hàm, nhập sai, EOF, chặn chức năng chưa sẵn sàng | Đã viết; kiểm tra menu và cả 6 chốt chặn đạt |
-| Nhập và kiểm tra tên, điện thoại, địa chỉ | Đã viết; kiểm tra các hàm nhập đạt; checkout chờ tích hợp |
-| Class Order, snapshot Customer và vector<CartItem> | Đã viết source; chờ kiểm thử với class thật |
-| Tính ngày hệ thống và ngày giao +3 | Đã viết; helper cộng ngày đã kiểm tra; Order chờ tích hợp |
-| Phí vận chuyển và tổng thanh toán long long | Đã viết source; chờ kiểm thử Order |
-| L04: Xem trước, từ chối giữ giỏ, xác nhận đơn chính thức | Đã viết source; chờ kiểm thử luồng thật |
-| L05: Tạo chuỗi hóa đơn, in và lưu TXT, báo lỗi ghi file | Đã viết source; chờ kiểm thử với Order thật |
-| F07: Tìm tên ASCII không phân biệt hoa thường | Đã viết source; chờ chạy trên Product thật |
-| L06: Ghép qua giao tiếp class, không lặp logic giỏ trong main | Đã nối source; tích hợp runtime chưa hoàn tất |
-| Kiểm thử, README, hướng dẫn bàn giao | Đã kiểm tra phần độc lập; kiểm thử đầy đủ còn chờ |
+| **Lâm** | Làm menu, hiển thị và tìm sản phẩm, nhập thông tin đặt hàng, tạo đơn, tính ngày giao/phí/tổng tiền, lưu hóa đơn, thêm sản phẩm mới, ghép code và kiểm tra chương trình. |
+| **Quốc Vĩ** | Đọc sản phẩm từ file, thêm và sửa giỏ hàng, tính tiền hàng/số lượng, kiểm tra số quá lớn, làm phần cung cấp phí và số ngày giao hàng. |
+| **Bích** | Làm thông tin sản phẩm và khách hàng, kiểm tra dữ liệu mẫu, lọc sản phẩm theo khoảng giá, kiểm tra hai sản phẩm có cùng mã hay không. |
 
-## Thành viên 2
+## Lâm
 
-| Công việc / file | Trạng thái | Bắt đầu từ |
+| Chức năng/công việc | File chính | Trạng thái |
 | --- | --- | --- |
-| CartItem.cpp: constructor và getter | TODO | Đọc CartItem.h, dùng Product đã hoàn tất |
-| CartItem.cpp: tăng/giảm số lượng | TODO | Không âm; chặn tràn số |
-| CartItem.cpp: thành tiền dòng | TODO | long long, kiểm tra trước phép nhân |
-| ShoppingCart.cpp: vector<CartItem> | TODO | Getter const, isEmpty, clear |
-| ShoppingCart.cpp: thêm cùng sản phẩm nhiều lần | TODO | Duyệt theo getId, không tạo dòng trùng |
-| ShoppingCart.cpp: tăng/giảm/xóa theo mã | TODO | false nếu không thấy; giảm về 0 thì erase |
-| ShoppingCart.cpp: tổng tiền và tổng số lượng | TODO | Cộng getTotalPrice và getQuantity |
-| ProductFile.cpp: đọc TXT, xử lý lỗi | TODO | ifstream, getline, tách ba trường |
-| Hỗ trợ tìm kiếm theo phân công bổ sung | Không bắt buộc | Leader đã viết tìm kiếm trong main |
-| Kiểm thử các class và tích hợp với Leader | Chưa chạy | Product đã sẵn sàng; hoàn thiện các TODO thành viên 2 |
+| Tạo project, hướng dẫn build và chạy | README.md, các file source | Đã làm, đã kiểm tra |
+| Làm menu và cho quay về menu sau mỗi thao tác | main.cpp | Đã làm, đã kiểm tra |
+| Hiển thị danh sách sản phẩm và giỏ hàng thành bảng dễ đọc | main.cpp, Order.cpp | Đã làm, đã kiểm tra |
+| Tìm sản phẩm theo một phần tên, không phân biệt hoa thường ASCII | main.cpp | Đã làm, đã kiểm tra |
+| Nhập tên, điện thoại, địa chỉ và báo khi người dùng nhập sai | main.cpp | Đã làm, đã kiểm tra |
+| Tạo đơn, ghi ngày đặt, tính ngày giao và tổng tiền cần thanh toán | Order.h/.cpp | Đã làm; giao thường 3 ngày, phí 30.000 VND |
+| Cho xem trước đơn; hủy thì giữ giỏ, xác nhận xong thì xóa giỏ | main.cpp | Đã làm, đã kiểm tra |
+| In hóa đơn và lưu hóa đơn TXT; báo lỗi khi không lưu được | Order.cpp, main.cpp | Đã làm, đã kiểm tra |
+| Gắn bộ lọc giá của Bích vào mục 7 | main.cpp | Đã làm, đã kiểm tra |
+| **S05: Thêm sản phẩm mới vào shop, lưu file và cập nhật danh sách ngay** | **main.cpp, ProductFile.h/.cpp** | **Lâm làm; đã kiểm tra** |
+| Ghép code, kiểm tra lại chức năng cũ và cập nhật tài liệu | Toàn project, README.md, TASKS.md | Đã làm; cả nhóm vẫn cần tự chạy demo |
 
-Hợp đồng cần giữ: tăng/giảm mỗi lần một đơn vị; addProduct trả void,
-các thao tác theo mã trả bool; getItems trả tham chiếu const; tổng số lượng
-và tiền trả long long. Không tự in thông báo thành công ở lớp nghiệp vụ.
-Lỗi dữ liệu/tràn số dùng exception; không trả kết quả giả để che lỗi.
+## Quốc Vĩ
 
-## Thành viên 3
-
-| Công việc / file | Trạng thái | Bắt đầu từ |
+| Chức năng/công việc | File chính | Trạng thái |
 | --- | --- | --- |
-| Product.cpp: constructor | Hoàn thành, kiểm thử đạt | Kiểm tra id > 0, tên có nội dung, giá > 0 |
-| Product.cpp: getId, getName, getPrice | Hoàn thành, kiểm thử đạt | Trả các thuộc tính private tương ứng |
-| Customer.cpp: constructor | Hoàn thành, kiểm thử đạt | Lưu và kiểm tra tên, điện thoại, địa chỉ |
-| Customer.cpp: ba getter | Hoàn thành, kiểm thử đạt | Trả tham chiếu const tới chuỗi |
-| Rà soát, chuẩn bị dữ liệu sản phẩm | Hoàn thành, kiểm thử đạt | 10 dòng mẫu hợp lệ; tạo được Product thật từ từng dòng |
-| Kiểm thử Product, Customer | Đã chạy đạt | Getter, bản sao, dữ liệu sai, giới hạn số, chuỗi tiếng Việt |
-| Hỗ trợ tài liệu và thuyết trình | Đã có hướng dẫn trong README; chưa thuyết trình | Đọc phần constructor, getter, đóng gói, sao chép |
+| Đọc mã, tên, giá sản phẩm từ products.txt vào danh sách | ProductFile.cpp: loadProductsFromFile | Đã làm, đã kiểm tra |
+| Báo lỗi khi thiếu file, sai dữ liệu hoặc trùng mã trong file | ProductFile.cpp | Đã làm, đã kiểm tra |
+| Lưu một sản phẩm và số lượng của sản phẩm đó trong giỏ | CartItem.h/.cpp | Đã làm, đã kiểm tra |
+| Thêm sản phẩm vào giỏ; thêm lại cùng mã thì tăng số lượng | ShoppingCart.cpp | Đã làm, đã kiểm tra |
+| Tăng/giảm số lượng, xóa mặt hàng; giảm về 0 thì bỏ khỏi giỏ | CartItem.cpp, ShoppingCart.cpp | Đã làm, đã kiểm tra |
+| Tính thành tiền từng mặt hàng, tổng tiền hàng và tổng số lượng | CartItem.cpp, ShoppingCart.cpp | Đã làm, đã kiểm tra |
+| Không cho số lượng âm; từ chối thao tác khiến tiền/số lượng vượt giới hạn | CartItem.cpp, ShoppingCart.cpp | Đã làm, đã kiểm tra |
+| Tìm mặt hàng đã có trong giỏ bằng find_if và phép so sánh mã của Bích | ShoppingCart.cpp | Đã làm, đã kiểm tra |
+| Cung cấp phí giao thường 30.000 VND và thời gian giao 3 ngày để Lâm dùng khi tạo đơn | ShippingMethod.h | Đã làm, đã kiểm tra |
 
-Phần code thành viên 3 đã được hoàn thiện theo yêu cầu bổ sung của Leader.
-Product và Customer không còn stub TODO. Các kiểm thử riêng không đồng nghĩa
-với hoàn thành tích hợp giỏ/đơn hàng; phần thành viên 2 vẫn còn TODO.
+**Lưu ý về ProductFile.cpp:** Quốc Vĩ phụ trách phần **đọc sản phẩm**;
+Lâm phụ trách phần **ghi sản phẩm mới của S05**. Hai phần dùng chung file source.
 
-## Điều kiện ghép code
+## Bích
 
-- [x] Header và stub liên kết được bằng lệnh G++ trong README.
-- [x] Cờ mặc định false, sáu mục báo chưa sẵn sàng.
-- [x] Kiểm tra độc lập menu, validator, định dạng tiền và helper cộng ngày.
-- [x] Thành viên 3 hoàn thiện Product và Customer, kiểm thử riêng đạt.
-- [ ] Thành viên 2 hoàn thiện CartItem, ShoppingCart và ProductFile.
-- [ ] Kiểm tra từng class và xử lý lỗi bộ đọc file.
-- [ ] Leader đổi MEMBER_LOGIC_READY thành true và build lại.
-- [ ] Chạy đầy đủ checklist tích hợp trong README.
-- [ ] Kiểm tra từ chối xác nhận, lưu file thất bại và bản sao Order.
-- [ ] Chuẩn bị demo và vấn đáp chung.
+| Chức năng/công việc | File chính | Trạng thái |
+| --- | --- | --- |
+| Lưu mã, tên và giá của sản phẩm; kiểm tra sản phẩm có dữ liệu hợp lệ | Product.h/.cpp | Đã làm, đã kiểm tra |
+| Lưu tên, số điện thoại, địa chỉ khách hàng; kiểm tra thông tin hợp lệ | Customer.h/.cpp | Đã làm, đã kiểm tra |
+| Kiểm tra và chuẩn bị dữ liệu sản phẩm mẫu | products.txt | Đã có; giữ nguyên các sản phẩm người dùng thêm |
+| Lọc sản phẩm theo giá thấp nhất và cao nhất; nhập ngược thì đổi hai mốc | Product.cpp: filterByPriceRange | Đã làm, đã kiểm tra |
+| So sánh hai sản phẩm theo mã để nhận biết cùng một mặt hàng | Product.cpp: operator== | Đã làm, được dùng khi thêm trùng vào giỏ |
+| Kiểm tra việc tạo/đọc thông tin sản phẩm, khách hàng và kết quả lọc giá | Test cục bộ | 42 kiểm tra đạt; phần so sánh mã có trong bộ kiểm tra OOP |
 
-Không đánh dấu các ô còn trống trước khi thực sự triển khai và chạy kiểm tra.
+**Bích phụ trách lọc giá; Lâm phụ trách thêm sản phẩm mới S05.**
+Đây là hai chức năng khác nhau.
+
+## S05 của Lâm gồm những gì?
+
+| Phần việc | Cách hoạt động hiện tại |
+| --- | --- |
+| Nhập mã, tên và giá ở mục 8 | Nhập sai thì báo lỗi và cho nhập lại; mã 0 là hủy. |
+| Kiểm tra mã trùng, tên rỗng/chứa dấu phân cách, giá không dương | Không cho lưu sản phẩm sai dữ liệu. |
+| Lưu sản phẩm mới | Ghi vào bản sao tạm, kiểm tra xong mới thay file products.txt. |
+| Giữ danh sách cũ khi lỗi lưu | Không thêm sản phẩm vào danh sách trên màn hình nếu lưu thất bại. |
+| Dùng ngay sau khi thêm | Xem, tìm, lọc, thêm vào giỏ được ngay; mở lại chương trình vẫn còn. |
+
+Đã chạy 16 kiểm tra ghi file và 18 kiểm tra S05 qua menu, đều đạt.
+Dữ liệu products.txt thật được giữ nguyên khi kiểm thử.
+
+## Ai cần giải thích phần kiến thức nào khi vấn đáp?
+
+| Người | Đoạn code cần nắm | Cách giải thích ngắn |
+| --- | --- | --- |
+| **Lâm** | main.cpp, Order.h/.cpp, phần ghi S05 trong ProductFile.cpp | Chương trình đi từ menu đến đặt hàng/lưu file thế nào; vì sao hủy không mất giỏ và lưu lỗi không thêm sản phẩm. |
+| **Quốc Vĩ** | CartItem, ShoppingCart, phần đọc trong ProductFile.cpp, ShippingMethod.h | Giỏ lưu và tính tiền thế nào; đọc file sai thì xử lý ra sao; phí/ngày giao được cung cấp cho Order bằng cách nào. |
+| **Bích** | Product, Customer, filterByPriceRange, operator== | Mỗi sản phẩm/khách lưu gì, vì sao cần constructor/getter; lọc giá và nhận biết trùng mã ra sao. |
+
+Bảng minh chứng đủ 7 chương và câu hỏi ôn tập nằm trong README.md và
+[docs/ON_TAP_OOP.md](docs/ON_TAP_OOP.md). Phân công trên không có nghĩa mỗi người
+chỉ cần biết phần mình; cả nhóm vẫn cần hiểu luồng mua hàng chung.
+
+## Kết quả kiểm tra và việc còn lại
+
+Các bộ kiểm tra hiện tại đều đạt: 42 kiểm tra thông tin/lọc giá, 23 kiểm tra OOP,
+59 kiểm tra đọc file/giỏ/đơn hàng, 18 kiểm tra menu cũ, 16 kiểm tra ghi S05
+và 18 kiểm tra S05 qua menu. Có phần kiểm tra trùng nhau, không cộng thành số chức năng.
+Build C++17 không cảnh báo; toàn bộ 8 mục menu đã bật.
+
+- [x] Các chức năng mua hàng, lọc giá và thêm sản phẩm mới đã hoạt động.
+- [x] Các phần bổ sung để minh họa 7 chương đã có trong source.
+- [x] Tên và phân công đã cập nhật: Lâm, Quốc Vĩ, Bích; S05 thuộc Lâm.
+- [ ] Lâm, Quốc Vĩ và Bích tự chạy chương trình trên máy mình.
+- [ ] Mỗi người tự giải thích được những hàm mình phụ trách.
+- [ ] Cả nhóm chuẩn bị và thực hiện demo, thuyết trình, vấn đáp.
+
+Thư mục tests/ chỉ dùng cục bộ và bị Git bỏ qua. Chưa kiểm thử mất điện/đĩa đầy;
+chưa hỗ trợ nhiều chương trình cùng ghi products.txt.

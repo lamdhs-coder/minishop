@@ -24,6 +24,9 @@ std::string formatDateTime(std::time_t time, const char* format) {
 
 std::time_t addCalendarDays(std::time_t time, int days) {
     std::tm date = localDateTime(time);
+    if (days > std::numeric_limits<int>::max() - date.tm_mday) {
+        throw std::overflow_error("So ngay giao hang vuot gioi han xu ly.");
+    }
     date.tm_mday += days;
     date.tm_isdst = -1; // De thu vien xac dinh lai gio mua he neu co.
     // mktime tu chuan hoa ngay qua cuoi thang, cuoi nam, nam nhuan.
@@ -75,14 +78,24 @@ void writeItemsTable(std::ostream& output, const std::vector<CartItem>& items) {
 }
 
 Order::Order(const Customer& customer, const std::vector<CartItem>& items)
+    : Order(customer, items, StandardShipping()) {
+    // Constructor cu uy quyen cho constructor co phuong thuc giao hang.
+}
+
+Order::Order(const Customer& customer, const std::vector<CartItem>& items,
+             const ShippingMethod& shipping)
     : customer(customer), items(items), orderTime(std::time(nullptr)),
-      shippingFee(30000) {
+      shippingFee(shipping.getFee()), deliveryDays(shipping.getDeliveryDays()) {
+    // Goi virtual qua tham chieu ShippingMethod, thuc thi override cua lop con.
     // Hai thanh vien du lieu o tren la BAN SAO, khong tham chieu gio goc.
     if (this->items.empty()) {
         throw std::invalid_argument("Khong the tao don hang voi gio rong.");
     }
     if (orderTime == static_cast<std::time_t>(-1)) {
         throw std::runtime_error("Khong lay duoc thoi gian dat hang.");
+    }
+    if (shippingFee < 0 || deliveryDays < 0) {
+        throw std::invalid_argument("Phi va so ngay giao hang khong duoc am.");
     }
     for (const CartItem& item : this->items) {
         if (item.getQuantity() <= 0 || item.getProduct().getPrice() <= 0) {
@@ -106,7 +119,7 @@ std::string Order::getOrderDate() const {
 }
 
 std::string Order::getEstimatedDeliveryDate() const {
-    return formatDateTime(addCalendarDays(orderTime, 3), "%d/%m/%Y");
+    return formatDateTime(addCalendarDays(orderTime, deliveryDays), "%d/%m/%Y");
 }
 
 long long Order::getShippingFee() const {

@@ -1,5 +1,6 @@
 #include "Product.h"
 #include <stdexcept>
+#include <utility>
 
 Product::Product(int id, const std::string& name, long long price)
     : id(id), name(name), price(price) {
@@ -25,4 +26,22 @@ const std::string& Product::getName() const {
 
 long long Product::getPrice() const {
     return price;
+}
+
+bool Product::operator==(const Product& other) const {
+    return id == other.id;
+}
+
+std::vector<Product> filterByPriceRange(const std::vector<Product>& products,
+                                       long long minPrice, long long maxPrice) {
+    std::vector<Product> result;
+    if (minPrice > maxPrice) {
+        std::swap(minPrice, maxPrice);
+    }
+    for (const Product& product : products) {
+        if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
+            result.push_back(product);
+        }
+    }
+    return result;
 }
