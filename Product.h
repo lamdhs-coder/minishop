@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <vector>
 
 using namespace std;
 
@@ -21,8 +20,3 @@ public:
     // Hai san pham cung ma duoc xem la cung mot mat hang.
     bool operator==(const Product& other) const;
 };
-
-// MEMBER 3: Loc ca hai dau mut; tu doi cho neu nhap khoang gia nguoc.
-// Dung long long de so sanh chinh xac voi gia VND cua Product.
-vector<Product> filterByPriceRange(const vector<Product>& products,
-                                       long long minPrice, long long maxPrice);

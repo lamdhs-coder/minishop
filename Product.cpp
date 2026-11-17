@@ -1,6 +1,5 @@
 #include "Product.h"
 #include <stdexcept>
-#include <utility>
 
 using namespace std;
 
@@ -32,18 +31,4 @@ long long Product::getPrice() const {
 
 bool Product::operator==(const Product& other) const {
     return id == other.id;
-}
-
-vector<Product> filterByPriceRange(const vector<Product>& products,
-                                       long long minPrice, long long maxPrice) {
-    vector<Product> result;
-    if (minPrice > maxPrice) {
-        swap(minPrice, maxPrice);
-    }
-    for (const Product& product : products) {
-        if (product.getPrice() >= minPrice && product.getPrice() <= maxPrice) {
-            result.push_back(product);
-        }
-    }
-    return result;
 }
