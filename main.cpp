@@ -5,16 +5,12 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
-#include <utility>
 
 #include "Order.h"
 #include "ProductFile.h"
 #include "ShoppingCart.h"
 
 using namespace std;
-
-// Logic cac thanh vien da duoc ghep; bat cac chuc nang tren menu.
-constexpr bool MEMBER_LOGIC_READY = true;
 
 string trim(const string& text) {
     const size_t first = text.find_first_not_of(" \t\r\n");
@@ -58,25 +54,6 @@ bool readRequiredText(const string& prompt, string& text) {
             return true;
         }
         cout << "[LOI] Thong tin khong duoc de trong.\n";
-    }
-    return false;
-}
-
-bool readPrice(const string& prompt, long long& price, bool allowZero = true) {
-    string text;
-    while (readLine(prompt, text)) {
-        istringstream input(text);
-        long long value;
-        char extra;
-        if ((input >> value) && !(input >> extra) && value >= 0
-            && (allowZero || value > 0)) {
-            price = value;
-            return true;
-        }
-        cout << "[LOI] Gia phai la so nguyen VND "
-                  << (allowZero ? "khong am" : "lon hon 0") << ", khong vuot "
-                  << numeric_limits<long long>::max()
-                  << ". Vi du: 250000.\n";
     }
     return false;
 }
@@ -128,14 +105,15 @@ void showMainMenu() {
               << "4. Xem gio hang\n"
               << "5. Chinh sua gio hang\n"
               << "6. Dat hang\n"
-              << "7. Loc san pham theo khoang gia\n"
-              << "8. Them san pham moi vao shop\n"
               << "0. Thoat\n"
               << "==========================================\n";
 }
 
 string shortName(const string& name) {
-    return name.size() <= 32 ? name : name.substr(0, 29) + "...";
+    if (name.size() > 32) {
+        return name.substr(0, 29) + "...";
+    }
+    return name;
 }
 
 void showProducts(const vector<Product>& products) {
@@ -182,77 +160,6 @@ void searchProducts(const vector<Product>& products) {
     } else {
         showProducts(matches);
     }
-}
-
-void showProductsByPrice(const vector<Product>& products) {
-    long long minPrice, maxPrice;
-    if (!readPrice("Gia thap nhat (VND): ", minPrice)
-        || !readPrice("Gia cao nhat (VND): ", maxPrice)) {
-        return;
-    }
-    if (minPrice > maxPrice) {
-        cout << "[THONG BAO] Khoang gia bi nguoc, tu doi cho hai moc gia.\n";
-    }
-    const vector<Product> matches = filterByPriceRange(products, minPrice, maxPrice);
-    if (matches.empty()) {
-        cout << "[THONG BAO] Khong co san pham trong khoang gia nay.\n";
-    } else {
-        showProducts(matches);
-    }
-}
-
-void addNewProduct(vector<Product>& products) {
-    cout << "\n==========================================\n"
-              << "           THEM SAN PHAM MOI\n"
-              << "==========================================\n";
-    int id;
-    while (true) {
-        if (!readInt("Nhap ma san pham (0: Huy): ", 0,
-                     numeric_limits<int>::max(), id)) {
-            return;
-        }
-        if (id == 0) {
-            cout << "[THONG BAO] Da huy them san pham.\n";
-            return;
-        }
-        bool duplicate = false;
-        for (const Product& item : products) {
-            if (item.getId() == id) {
-                duplicate = true;
-                break;
-            }
-        }
-        if (!duplicate) {
-            break;
-        }
-        cout << "[LOI] Ma san pham da ton tai. Vui long nhap ma khac.\n";
-    }
-
-    string name;
-    while (true) {
-        if (!readRequiredText("Nhap ten san pham: ", name)) {
-            return;
-        }
-        if (name.find_first_not_of(" \t\r\n\f\v") != string::npos
-            && name.find_first_of("|\r\n") == string::npos) {
-            break;
-        }
-        cout << "[LOI] Ten phai co noi dung, khong chua | hoac xuong dong.\n";
-    }
-    long long price;
-    if (!readPrice("Nhap gia san pham (VND): ", price, false)) {
-        return;
-    }
-    Product product(id, name, price);
-    // Du bo nho truoc khi ghi. Sau khi luu, move Product khong cap phat chuoi lai.
-    products.reserve(products.size() + 1);
-    appendProductToFile("products.txt", product);
-    products.push_back(move(product));
-    const Product& saved = products.back();
-    cout << "[THANH CONG] Da them san pham moi vao shop.\n"
-              << "Ma SP : " << saved.getId() << '\n'
-              << "Ten SP: " << saved.getName() << '\n'
-              << "Gia   : " << formatMoney(saved.getPrice()) << '\n';
 }
 
 void addToCart(const vector<Product>& products, ShoppingCart& cart) {
@@ -319,8 +226,11 @@ void editCart(ShoppingCart& cart) {
         } else {
             changed = cart.removeProduct(productId);
         }
-        cout << (changed ? "[THANH CONG] Da cap nhat gio hang.\n"
-                              : "[LOI] Ma san pham khong co trong gio.\n");
+        if (changed) {
+            cout << "[THANH CONG] Da cap nhat gio hang.\n";
+        } else {
+            cout << "[LOI] Ma san pham khong co trong gio.\n";
+        }
     }
 }
 
@@ -330,8 +240,13 @@ void checkout(ShoppingCart& cart) {
         return;
     }
     string name, phone, address;
-    if (!readRequiredText("Ho va ten: ", name) || !readPhone(phone)
-        || !readRequiredText("Dia chi giao hang: ", address)) {
+    if (!readRequiredText("Ho va ten: ", name)) {
+        return;
+    }
+    if (!readPhone(phone)) {
+        return;
+    }
+    if (!readRequiredText("Dia chi giao hang: ", address)) {
         return;
     }
     const Customer customer(name, phone, address);
@@ -340,7 +255,7 @@ void checkout(ShoppingCart& cart) {
     const Order preview(customer, cart.getItems());
     cout << "\n[XEM TRUOC - CHUA XAC NHAN DAT HANG]\n"
               << preview.getReceiptText();
-    bool confirmed;
+    bool confirmed = false;
     if (!askYesNo("Ban xac nhan dat hang?", confirmed) || !confirmed) {
         cout << "[THONG BAO] Chua dat hang. Gio hang duoc giu nguyen.\n";
         return;
@@ -352,7 +267,7 @@ void checkout(ShoppingCart& cart) {
     cout << "\n[THANH CONG] Dat hang thanh cong!\n"
               << order.getReceiptText();
 
-    bool save;
+    bool save = false;
     if (!askYesNo("Ban muon luu hoa don TXT?", save) || !save) {
         return;
     }
@@ -371,29 +286,19 @@ int main() {
     ShoppingCart cart;
 
     cout << "Chao mung ban den voi MiniShop!\n";
-    if (!MEMBER_LOGIC_READY) {
-        cout << "[TRANG THAI] Cac chuc nang chua duoc bat tich hop.\n";
-    } else {
-        try {
-            products = loadProductsFromFile("products.txt");
-        } catch (const exception& error) {
-            cerr << "[LOI] Khong tai duoc danh sach san pham: "
-                      << error.what() << "\nHay kiem tra products.txt va chay lai.\n";
-            return 1;
-        }
+    try {
+        products = loadProductsFromFile("products.txt");
+    } catch (const exception& error) {
+        cerr << "[LOI] Khong tai duoc danh sach san pham: "
+             << error.what() << "\nHay kiem tra products.txt va chay lai.\n";
+        return 1;
     }
 
     while (cin) {
         showMainMenu();
         int choice;
-        if (!readInt("Nhap lua chon: ", 0, 8, choice) || choice == 0) {
+        if (!readInt("Nhap lua chon: ", 0, 6, choice) || choice == 0) {
             break;
-        }
-        // Co tich hop cho phep tam tat cac chuc nang khi ghep code.
-        if (!MEMBER_LOGIC_READY) {
-            cout << "Chuc nang dang duoc thanh vien phat trien.\n";
-            waitForMenu();
-            continue;
         }
         try {
             switch (choice) {
@@ -403,8 +308,6 @@ int main() {
                 case 4: showCart(cart); break;
                 case 5: editCart(cart); break;
                 case 6: checkout(cart); break;
-                case 7: showProductsByPrice(products); break;
-                case 8: addNewProduct(products); break;
             }
         } catch (const exception& error) {
             cout << "[LOI] " << error.what() << '\n';
